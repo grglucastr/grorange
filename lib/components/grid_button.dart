@@ -23,11 +23,14 @@ class GridButton extends StatelessWidget {
         ],
       ),
       child: Center(
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 16,
-            fontFamily: 'Roboto',
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 16,
+              fontFamily: 'Roboto',
+            ),
           ),
         ),
       ),
