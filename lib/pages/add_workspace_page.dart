@@ -9,8 +9,8 @@ class AddWorkspacePage extends StatefulWidget {
 }
 
 class _AddWorkspacePageState extends State<AddWorkspacePage> {
-
-  final TextEditingController _workspaceNameController = TextEditingController();
+  final TextEditingController _workspaceNameController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +34,11 @@ class _AddWorkspacePageState extends State<AddWorkspacePage> {
             const SizedBox(height: 8),
             TextField(
               controller: _workspaceNameController,
+              autofocus: true,
               decoration: InputDecoration(
                 hintText: 'Home',
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(width: 1, color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                focusedBorder: buildOutlineInputBorder(),
+                border: buildOutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 32),
@@ -47,8 +46,10 @@ class _AddWorkspacePageState extends State<AddWorkspacePage> {
               width: double.maxFinite,
               child: ElevatedButton(
                 onPressed: () {
-                  debugPrint('Workspace name: ${_workspaceNameController.text}');
+                  debugPrint(
+                      'Workspace name: ${_workspaceNameController.text}');
                   _workspaceNameController.text = '';
+                  Navigator.pop(context);
                 },
                 child: const Text('Save'),
               ),
@@ -56,6 +57,13 @@ class _AddWorkspacePageState extends State<AddWorkspacePage> {
           ],
         ),
       ),
+    );
+  }
+
+  OutlineInputBorder buildOutlineInputBorder() {
+    return OutlineInputBorder(
+      borderSide: const BorderSide(width: 1, color: Colors.grey),
+      borderRadius: BorderRadius.circular(10),
     );
   }
 }
