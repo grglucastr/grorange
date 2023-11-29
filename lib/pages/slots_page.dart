@@ -17,7 +17,7 @@ class _SlotsPageState extends State<SlotsPage> {
   Widget build(BuildContext context) {
     // TODO: Load info from database
     List<Widget> buttons = List.empty(growable: true);
-    buttons.add(const GridButton(text: 'Fridge'));
+    buttons.add(GridButton(text: 'Fridge', onTap: (){},));
 
     return Scaffold(
       appBar: const PageAppBar(title: 'Home'),

@@ -4,6 +4,7 @@ import 'package:grorange/components/grid_options.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/components/page_title.dart';
 import 'package:grorange/pages/add_workspace_page.dart';
+import 'package:grorange/pages/slots_page.dart';
 
 class WorkspacesPage extends StatefulWidget {
   const WorkspacesPage({super.key});
@@ -17,7 +18,16 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
   Widget build(BuildContext context) {
     // TODO: Load info from database
     List<Widget> buttons = List.empty(growable: true);
-    buttons.add(const GridButton(text: 'Home'));
+    buttons.add(GridButton(
+      text: 'Home',
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const SlotsPage(),
+          ),
+        );
+      },
+    ));
 
     return Scaffold(
         appBar: const PageAppBar(
