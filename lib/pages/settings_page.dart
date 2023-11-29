@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grorange/components/page_app_bar.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -13,13 +14,7 @@ class _SettingsPageState extends State<SettingsPage> {
     List<ListTile> options = getOptions();
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Settings',
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Colors.blue,
-        ),
+        appBar: const PageAppBar(title: 'Settings',),
         body: ListView.separated(
           itemBuilder: (context, index) => options[index],
           separatorBuilder: (context, index) => const Divider(),

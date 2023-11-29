@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grorange/components/grid_button.dart';
 import 'package:grorange/components/grid_options.dart';
+import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/components/page_title.dart';
 
 class WorkspacesPage extends StatefulWidget {
@@ -19,13 +20,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
     buttons.add(const GridButton(text: 'Home'));
     
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Welcome, George!', // TODO: Get value from state manager
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.blue,
-      ),
+      appBar: const PageAppBar(title: 'Welcome, George!',),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
         },
