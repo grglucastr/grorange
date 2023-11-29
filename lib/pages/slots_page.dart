@@ -3,6 +3,7 @@ import 'package:grorange/components/grid_options.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/components/page_title.dart';
 import 'package:grorange/components/grid_button.dart';
+import 'package:grorange/pages/add_slot_page.dart';
 
 class SlotsPage extends StatefulWidget {
   const SlotsPage({super.key});
@@ -22,9 +23,9 @@ class _SlotsPageState extends State<SlotsPage> {
       appBar: const PageAppBar(title: 'Home'),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigator.of(context).push(MaterialPageRoute(
-          //   builder: (context) => const AddWorkspacePage(),
-          // ));
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const AddSlotPage(),
+          ));
         },
         child: const Icon(Icons.add),
       ),
