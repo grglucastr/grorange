@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'pages/login_page.dart';
+import 'package:grorange/pages/home_page.dart';
 
 void main() {
   runApp(const Grorange());
@@ -13,7 +12,7 @@ class Grorange extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
-      home: const LoginPage(),
+      home: const Home(),
     );
   }
 }
