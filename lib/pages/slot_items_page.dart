@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/models/SlotItem.dart';
+import 'package:grorange/pages/add_slot_item_page.dart';
 
 class SlotItemsPage extends StatefulWidget {
   const SlotItemsPage({super.key});
@@ -22,7 +23,13 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
         title: 'Fridge',
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const AddSlotItemPage(),
+            ),
+          );
+        },
         child: const Icon(Icons.add),
       ),
       body: Padding(
