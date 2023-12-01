@@ -1,6 +1,8 @@
+import 'package:grorange/models/item_consumption_level.dart';
+
 class SlotItem {
   String name;
-  String level;
+  ItemConsumptionLevel level;
 
   SlotItem(this.name, this.level);
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/models/SlotItem.dart';
+import 'package:grorange/models/item_consumption_level.dart';
 import 'package:grorange/pages/add_slot_item_page.dart';
 
 class SlotItemsPage extends StatefulWidget {
@@ -17,9 +18,9 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
   @override
   Widget build(BuildContext context) {
     List<SlotItem> items = List.empty(growable: true);
-    items.add(SlotItem('Yogurt', 'Safe'));
-    items.add(SlotItem('Cheese', 'Moderate'));
-    items.add(SlotItem('Broccoli', 'Critical'));
+    items.add(SlotItem('Yogurt', ItemConsumptionLevel.safe));
+    items.add(SlotItem('Cheese', ItemConsumptionLevel.moderate));
+    items.add(SlotItem('Broccoli', ItemConsumptionLevel.critical));
 
     List<SlotItem> filteredItems = List.empty(growable: true);
     filteredItems.addAll(items);
@@ -85,7 +86,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
                   SlotItem current = filteredItems[index];
                   return ListTile(
                     title: Text(current.name),
-                    subtitle: Text(current.level),
+                    subtitle: Text(current.level.text),
                   );
                 },
               ),
