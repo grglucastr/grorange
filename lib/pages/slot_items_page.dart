@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grorange/components/page_app_bar.dart';
-import 'package:grorange/models/SlotItem.dart';
+import 'package:grorange/models/item.dart';
 import 'package:grorange/models/item_consumption_level.dart';
 import 'package:grorange/pages/add_slot_item_page.dart';
 
@@ -12,17 +12,13 @@ class SlotItemsPage extends StatefulWidget {
 }
 
 class _SlotItemsPageState extends State<SlotItemsPage> {
-
   final TextEditingController _searchItemsController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    List<SlotItem> items = List.empty(growable: true);
-    items.add(SlotItem('Yogurt', ItemConsumptionLevel.safe));
-    items.add(SlotItem('Cheese', ItemConsumptionLevel.moderate));
-    items.add(SlotItem('Broccoli', ItemConsumptionLevel.critical));
+    List<Item> items = _getItems();
 
-    List<SlotItem> filteredItems = List.empty(growable: true);
+    List<Item> filteredItems = List.empty(growable: true);
     filteredItems.addAll(items);
 
     return Scaffold(
@@ -57,17 +53,18 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
                 bottom: 25,
               ),
               child: TextField(
-                onChanged: (newValue){
+                onChanged: (newValue) {
                   //TODO: finish this filtering
-                  if(newValue.isEmpty){
+                  if (newValue.isEmpty) {
                     filteredItems.addAll(items);
                   }
                   _searchItemsController.text = newValue;
                   setState(() {
                     filteredItems.clear();
                     filteredItems.addAll(items
-                        .where((el) => el.name.toLowerCase()
-                        .contains(newValue.toLowerCase()))
+                        .where((el) => el.name
+                            .toLowerCase()
+                            .contains(newValue.toLowerCase()))
                         .toList());
                   });
                 },
@@ -83,10 +80,10 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
                 separatorBuilder: (context, index) => const Divider(),
                 itemCount: filteredItems.length,
                 itemBuilder: (context, index) {
-                  SlotItem current = filteredItems[index];
+                  Item current = filteredItems[index];
                   return ListTile(
                     title: Text(current.name),
-                    subtitle: Text(current.level.text),
+                    subtitle: Text(current.consumptionLevel.text),
                   );
                 },
               ),
@@ -102,5 +99,17 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
       borderSide: const BorderSide(width: 1, color: Colors.grey),
       borderRadius: BorderRadius.circular(10),
     );
+  }
+
+  List<Item> _getItems() {
+    List<Item> items = List.empty(growable: true);
+    items.add(Item(null, 'Yogurt', 2, 0.83, ItemConsumptionLevel.safe, "", "",
+        "", DateTime.now(), null));
+    items.add(Item(null, 'Cheese', 2, 0.4, ItemConsumptionLevel.moderate, "",
+        "", "", DateTime.now(), null));
+    items.add(Item(null, 'Broccoli', 2, 0.1, ItemConsumptionLevel.critical, "",
+        "", "", DateTime.now(), null));
+
+    return items;
   }
 }

@@ -10,6 +10,5 @@ class Workspace extends Base {
     super.insertDateTime,
     super.updateDateTime,
     this.userId,
-    super.active,
   );
 }

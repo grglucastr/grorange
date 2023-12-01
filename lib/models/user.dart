@@ -6,7 +6,6 @@ class User extends Base {
   User(
     super.id,
     this.name,
-    super.active,
     super.insertDateTime,
     super.updateDateTime,
   );

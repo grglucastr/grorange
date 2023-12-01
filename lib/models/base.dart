@@ -1,8 +1,8 @@
 abstract class Base {
-  final String id;
-  final bool active;
+  final String? id;
+  final bool active = true;
   final DateTime insertDateTime;
-  final DateTime updateDateTime;
+  final DateTime? updateDateTime;
 
-  Base(this.id, this.active, this.insertDateTime, this.updateDateTime);
+  Base(this.id, this.insertDateTime, this.updateDateTime);
 }

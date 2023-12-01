@@ -10,7 +10,6 @@ class Slot extends Base {
     this.name,
     this.userId,
     this.workspaceId,
-    super.active,
     super.insertDateTime,
     super.updateDateTime,
   );

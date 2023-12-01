@@ -19,7 +19,6 @@ class Item extends Base {
       this.slotId,
       this.workspaceId,
       this.userId,
-      super.active,
       super.insertDateTime,
       super.updateDateTime);
 }
