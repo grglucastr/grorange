@@ -11,12 +11,18 @@ class SlotItemsPage extends StatefulWidget {
 }
 
 class _SlotItemsPageState extends State<SlotItemsPage> {
+
+  final TextEditingController _searchItemsController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     List<SlotItem> items = List.empty(growable: true);
     items.add(SlotItem('Yogurt', 'Safe'));
     items.add(SlotItem('Cheese', 'Moderate'));
     items.add(SlotItem('Broccoli', 'Critical'));
+
+    List<SlotItem> filteredItems = List.empty(growable: true);
+    filteredItems.addAll(items);
 
     return Scaffold(
       appBar: const PageAppBar(
@@ -50,6 +56,20 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
                 bottom: 25,
               ),
               child: TextField(
+                onChanged: (newValue){
+                  //TODO: finish this filtering
+                  if(newValue.isEmpty){
+                    filteredItems.addAll(items);
+                  }
+                  _searchItemsController.text = newValue;
+                  setState(() {
+                    filteredItems.clear();
+                    filteredItems.addAll(items
+                        .where((el) => el.name.toLowerCase()
+                        .contains(newValue.toLowerCase()))
+                        .toList());
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: 'Search items...',
                   border: _buildOutlineInputBorder(),
@@ -60,11 +80,12 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
             Expanded(
               child: ListView.separated(
                 separatorBuilder: (context, index) => const Divider(),
-                itemCount: items.length,
+                itemCount: filteredItems.length,
                 itemBuilder: (context, index) {
-                  SlotItem current = items[index];
+                  SlotItem current = filteredItems[index];
                   return ListTile(
                     title: Text(current.name),
+                    subtitle: Text(current.level),
                   );
                 },
               ),
