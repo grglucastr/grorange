@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/models/item.dart';
-import 'package:grorange/models/item_consumption_level.dart';
+import 'package:grorange/models/enums/item_consumption_level.dart';
 import 'package:grorange/pages/add_slot_item_page.dart';
 
 class SlotItemsPage extends StatefulWidget {

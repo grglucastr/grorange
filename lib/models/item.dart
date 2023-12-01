@@ -1,5 +1,5 @@
 import 'package:grorange/models/base.dart';
-import 'package:grorange/models/item_consumption_level.dart';
+import 'package:grorange/models/enums/item_consumption_level.dart';
 
 class Item extends Base {
   final String name;
