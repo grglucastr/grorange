@@ -66,7 +66,7 @@ class ItemDAO {
         row[_workspaceId],
         row[_userId],
         DateTime.parse(row[_insertDateTime]),
-        row[_updateDateTime] == 'null' ? null : row[_updateDateTime],
+        row[_updateDateTime] == 'null' ? null : DateTime(row[_updateDateTime]),
       );
 
       item.active = row[_active] == 1;
