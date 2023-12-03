@@ -5,4 +5,9 @@ abstract class Base {
   DateTime? updateDateTime;
 
   Base(this.id, this.insertDateTime, this.updateDateTime);
+
+  @override
+  String toString() {
+    return 'Base{id: $id, active: $active, insertDateTime: $insertDateTime, updateDateTime: $updateDateTime}';
+  }
 }

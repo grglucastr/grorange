@@ -11,4 +11,9 @@ class Workspace extends Base {
     super.updateDateTime,
     this.userId,
   );
+
+  @override
+  String toString() {
+    return 'Workspace{id: $id, name: $name, active: $active, insertDateTime: $insertDateTime, updateDateTime: $updateDateTime, userId: $userId}';
+  }
 }
