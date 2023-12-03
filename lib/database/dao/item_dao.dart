@@ -34,7 +34,7 @@ class ItemDAO {
   Future<int> save(Item item) async {
     final Database db = await getDatabase();
 
-    Map<String, dynamic> itemMap = Map();
+    Map<String, dynamic> itemMap = {};
     itemMap[_id] = item.id;
     itemMap[_name] = item.name;
     itemMap[_quantity] = item.quantity;
@@ -69,7 +69,7 @@ class ItemDAO {
         row[_updateDateTime] == 'null' ? null : row[_updateDateTime],
       );
 
-      item.active = row[_active] == 1 ? true : false;
+      item.active = row[_active] == 1;
       items.add(item);
     }
     return items;
