@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/database/dao/slot_dao.dart';
+import 'package:grorange/models/slot.dart';
+import 'package:uuid/uuid.dart';
 
 class AddSlotPage extends StatefulWidget {
   const AddSlotPage({super.key});
@@ -43,8 +46,9 @@ class _AddSlotPageState extends State<AddSlotPage> {
               width: double.maxFinite,
               child: ElevatedButton(
                 onPressed: () {
-                  debugPrint('Slot name ${_slotNameController.text}');
+                  _save();
                   _slotNameController.text = '';
+                  Navigator.pop(context);
                 },
                 child: const Text('Save'),
               ),
@@ -60,5 +64,22 @@ class _AddSlotPageState extends State<AddSlotPage> {
       borderSide: const BorderSide(width: 1, color: Colors.grey),
       borderRadius: BorderRadius.circular(10),
     );
+  }
+
+  void _save() async {
+    var dao = SlotDAO();
+
+    var uuid = const Uuid();
+
+    final Slot slot = Slot(
+      uuid.v4(),
+      _slotNameController.text,
+      uuid.v4(),
+      uuid.v4(),
+      DateTime.now(),
+      null,
+    );
+
+    await dao.save(slot);
   }
 }
