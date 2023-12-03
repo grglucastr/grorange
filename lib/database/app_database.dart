@@ -1,4 +1,5 @@
 import 'package:grorange/database/dao/item_dao.dart';
+import 'package:grorange/database/dao/workspace_dao.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -8,6 +9,7 @@ Future<Database> getDatabase() async {
     path,
     onCreate: (db, version) {
       db.execute(ItemDAO.createTable);
+      db.execute(WorkspaceDAO.createTable);
     },
     version: 1,
   );
