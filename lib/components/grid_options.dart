@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:grorange/components/grid_button.dart';
 
 class GridOptions extends StatelessWidget {
-  final List<Widget> buttons;
+  final List<GridButton> buttons;
 
   const GridOptions({required this.buttons, super.key});
 

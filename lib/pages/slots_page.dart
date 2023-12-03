@@ -17,7 +17,7 @@ class _SlotsPageState extends State<SlotsPage> {
   @override
   Widget build(BuildContext context) {
     // TODO: Load info from database
-    List<Widget> buttons = List.empty(growable: true);
+    List<GridButton> buttons = List.empty(growable: true);
     buttons.add(
       GridButton(
         text: 'Fridge',
