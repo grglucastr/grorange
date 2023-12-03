@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grorange/components/grid_button.dart';
 import 'package:grorange/components/grid_empty.dart';
 import 'package:grorange/components/grid_options.dart';
+import 'package:grorange/components/loading.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/components/page_title.dart';
 import 'package:grorange/database/dao/workspace_dao.dart';
@@ -51,15 +52,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
                     case ConnectionState.none:
                       break;
                     case ConnectionState.waiting:
-                      return Center(
-                        child: Column(
-                          children: const [
-                            CircularProgressIndicator(),
-                            SizedBox(height: 30),
-                            Text('Loading...'),
-                          ],
-                        ),
-                      );
+                      return const Loading();
                     case ConnectionState.active:
                       break;
                     case ConnectionState.done:
