@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/database/dao/workspace_dao.dart';
+import 'package:grorange/models/workspace.dart';
+import 'package:uuid/uuid.dart';
 
 class AddWorkspacePage extends StatefulWidget {
   const AddWorkspacePage({super.key});
@@ -46,8 +49,7 @@ class _AddWorkspacePageState extends State<AddWorkspacePage> {
               width: double.maxFinite,
               child: ElevatedButton(
                 onPressed: () {
-                  debugPrint(
-                      'Workspace name: ${_workspaceNameController.text}');
+                  _save();
                   _workspaceNameController.text = '';
                   Navigator.pop(context);
                 },
@@ -65,5 +67,20 @@ class _AddWorkspacePageState extends State<AddWorkspacePage> {
       borderSide: const BorderSide(width: 1, color: Colors.grey),
       borderRadius: BorderRadius.circular(10),
     );
+  }
+
+  void _save() async {
+    var uuid = const Uuid();
+
+    final Workspace workspace = Workspace(
+      uuid.v4(),
+      _workspaceNameController.text,
+      DateTime.now(),
+      null,
+      uuid.v4(),
+    );
+
+    var dao = WorkspaceDAO();
+    await dao.save(workspace);
   }
 }
