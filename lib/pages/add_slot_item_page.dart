@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/database/dao/item_dao.dart';
+import 'package:grorange/models/enums/item_consumption_level.dart';
+import 'package:grorange/models/item.dart';
+import 'package:uuid/uuid.dart';
 
 class AddSlotItemPage extends StatefulWidget {
   const AddSlotItemPage({super.key});
@@ -80,7 +84,12 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
               SizedBox(
                 width: double.maxFinite,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _save();
+                    _itemNameController.text = '';
+                    _quantityController.text = '';
+                    Navigator.pop(context);
+                  },
                   child: const Text('Save'),
                 ),
               )
@@ -96,5 +105,42 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
       borderSide: const BorderSide(width: 1, color: Colors.grey),
       borderRadius: BorderRadius.circular(10),
     );
+  }
+
+  void _save() async {
+    var uuid = const Uuid();
+
+    final Item item = Item(
+      uuid.v4(),
+      _itemNameController.text,
+      int.parse(_quantityController.text),
+      consumption,
+      _getLevel(consumption),
+      uuid.v4(),
+      uuid.v4(),
+      uuid.v4(),
+      DateTime.now(),
+      null,
+    );
+
+    var dao = ItemDAO();
+    await dao.save(item);
+
+  }
+
+  ItemConsumptionLevel _getLevel(double consumption){
+    if(consumption >= .7) {
+      return ItemConsumptionLevel.safe;
+    }
+
+    if(consumption >= .4) {
+      return ItemConsumptionLevel.moderate;
+    }
+
+    if(consumption >= .39) {
+      return ItemConsumptionLevel.severe;
+    }
+
+    return ItemConsumptionLevel.critical;
   }
 }

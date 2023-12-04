@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:grorange/components/grid_empty.dart';
 import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/database/dao/item_dao.dart';
 import 'package:grorange/models/item.dart';
 import 'package:grorange/models/enums/item_consumption_level.dart';
 import 'package:grorange/pages/add_slot_item_page.dart';
@@ -21,17 +23,17 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
     List<Item> filteredItems = List.empty(growable: true);
     filteredItems.addAll(items);
 
+    var dao = ItemDAO();
+
     return Scaffold(
       appBar: const PageAppBar(
         title: 'Fridge',
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const AddSlotItemPage(),
-            ),
-          );
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const AddSlotItemPage(),
+          )).then((value) => setState((){}));
         },
         child: const Icon(Icons.add),
       ),
@@ -76,21 +78,33 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
               ),
             ),
             Expanded(
-              child: ListView.separated(
-                separatorBuilder: (context, index) => const Divider(),
-                itemCount: filteredItems.length,
-                itemBuilder: (context, index) {
-                  Item current = filteredItems[index];
-                  return ListTile(
-                    title: Text(current.name),
-                    subtitle: Text(current.consumptionLevel.text),
-                  );
-                },
-              ),
-            )
+              child: FutureBuilder<List<Item>>(
+                  future: dao.findAll(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                      final List<Item> content = snapshot.data!;
+                      return _buildListView(content);
+                    }
+                    return const GridEmpty();
+                  }),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  ListView _buildListView(List<Item> filteredItems) {
+    return ListView.separated(
+      separatorBuilder: (context, index) => const Divider(),
+      itemCount: filteredItems.length,
+      itemBuilder: (context, index) {
+        Item current = filteredItems[index];
+        return ListTile(
+          title: Text(current.name),
+          subtitle: Text(current.consumptionLevel.text),
+        );
+      },
     );
   }
 
