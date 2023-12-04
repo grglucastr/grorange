@@ -3,7 +3,6 @@ import 'package:grorange/components/grid_empty.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/database/dao/item_dao.dart';
 import 'package:grorange/models/item.dart';
-import 'package:grorange/models/enums/item_consumption_level.dart';
 import 'package:grorange/pages/add_slot_item_page.dart';
 
 class SlotItemsPage extends StatefulWidget {
@@ -18,11 +17,6 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Item> items = _getItems();
-
-    List<Item> filteredItems = List.empty(growable: true);
-    filteredItems.addAll(items);
-
     var dao = ItemDAO();
 
     return Scaffold(
@@ -31,9 +25,11 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const AddSlotItemPage(),
-          )).then((value) => setState((){}));
+          Navigator.of(context)
+              .push(MaterialPageRoute(
+                builder: (context) => const AddSlotItemPage(),
+              ))
+              .then((value) => setState(() {}));
         },
         child: const Icon(Icons.add),
       ),
@@ -55,21 +51,8 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
                 bottom: 25,
               ),
               child: TextField(
-                onChanged: (newValue) {
-                  //TODO: finish this filtering
-                  if (newValue.isEmpty) {
-                    filteredItems.addAll(items);
-                  }
-                  _searchItemsController.text = newValue;
-                  setState(() {
-                    filteredItems.clear();
-                    filteredItems.addAll(items
-                        .where((el) => el.name
-                            .toLowerCase()
-                            .contains(newValue.toLowerCase()))
-                        .toList());
-                  });
-                },
+                controller: _searchItemsController,
+                onChanged: (newValue) {},
                 decoration: InputDecoration(
                   hintText: 'Search items...',
                   border: _buildOutlineInputBorder(),
@@ -79,14 +62,15 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
             ),
             Expanded(
               child: FutureBuilder<List<Item>>(
-                  future: dao.findAll(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                      final List<Item> content = snapshot.data!;
-                      return _buildListView(content);
-                    }
-                    return const GridEmpty();
-                  }),
+                future: dao.findAll(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    final List<Item> content = snapshot.data!;
+                    return _buildListView(content);
+                  }
+                  return const GridEmpty();
+                },
+              ),
             ),
           ],
         ),
@@ -113,17 +97,5 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
       borderSide: const BorderSide(width: 1, color: Colors.grey),
       borderRadius: BorderRadius.circular(10),
     );
-  }
-
-  List<Item> _getItems() {
-    List<Item> items = List.empty(growable: true);
-    items.add(Item(null, 'Yogurt', 2, 0.83, ItemConsumptionLevel.safe, "", "",
-        "", DateTime.now(), null));
-    items.add(Item(null, 'Cheese', 2, 0.4, ItemConsumptionLevel.moderate, "",
-        "", "", DateTime.now(), null));
-    items.add(Item(null, 'Broccoli', 2, 0.1, ItemConsumptionLevel.critical, "",
-        "", "", DateTime.now(), null));
-
-    return items;
   }
 }
