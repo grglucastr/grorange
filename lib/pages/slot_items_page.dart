@@ -14,11 +14,10 @@ class SlotItemsPage extends StatefulWidget {
 
 class _SlotItemsPageState extends State<SlotItemsPage> {
   final TextEditingController _searchItemsController = TextEditingController();
+  var dao = ItemDAO();
 
   @override
   Widget build(BuildContext context) {
-    var dao = ItemDAO();
-
     return Scaffold(
       appBar: const PageAppBar(
         title: 'Fridge',
@@ -84,11 +83,42 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
       itemCount: filteredItems.length,
       itemBuilder: (context, index) {
         Item current = filteredItems[index];
-        return ListTile(
-          title: Text(current.name),
-          subtitle: Text(current.consumptionLevel.text),
-        );
+        return _renderDismissibleItem(current);
       },
+    );
+  }
+
+  Dismissible _renderDismissibleItem(Item item) {
+    String itemID = item.id!;
+    return Dismissible(
+      key: UniqueKey(),
+      onDismissed: (direction) {
+        setState(() => {dao.delete(itemID)});
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${item.name} removed')));
+      },
+      background: Container(
+        color: Colors.red,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _removeText(),
+              _removeText(),
+            ],
+          ),
+        ),
+      ),
+      child: _renderListTile(item),
+    );
+  }
+
+  ListTile _renderListTile(Item item) {
+    return ListTile(
+      title: Text(item.name),
+      subtitle: Text(item.consumptionLevel.text),
     );
   }
 
@@ -96,6 +126,16 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
     return OutlineInputBorder(
       borderSide: const BorderSide(width: 1, color: Colors.grey),
       borderRadius: BorderRadius.circular(10),
+    );
+  }
+
+  Text _removeText() {
+    return const Text(
+      'Remove',
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
     );
   }
 }

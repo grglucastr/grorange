@@ -46,5 +46,9 @@ class ItemDAO {
     return items;
   }
 
+  Future<int> delete(String itemID) async {
+    final Database db = await getDatabase();
+    return db.delete(_tableName, where: 'id=?', whereArgs: [itemID]);
+  }
 
 }
