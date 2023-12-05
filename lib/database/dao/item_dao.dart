@@ -1,5 +1,4 @@
 import 'package:grorange/database/app_database.dart';
-import 'package:grorange/models/enums/item_consumption_level.dart';
 import 'package:grorange/models/item.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -33,21 +32,7 @@ class ItemDAO {
 
   Future<int> save(Item item) async {
     final Database db = await getDatabase();
-
-    Map<String, dynamic> itemMap = {};
-    itemMap[_id] = item.id;
-    itemMap[_name] = item.name;
-    itemMap[_quantity] = item.quantity;
-    itemMap[_usagePercentage] = item.usagePercentage;
-    itemMap[_consumptionLevel] = item.consumptionLevel.text;
-    itemMap[_workspaceId] = item.workspaceId;
-    itemMap[_userId] = item.userId;
-    itemMap[_slotId] = item.slotId;
-    itemMap[_insertDateTime] = item.insertDateTime.toString();
-    itemMap[_updateDateTime] = item.updateDateTime.toString();
-    itemMap[_active] = item.active ? 1 : 0;
-
-    return db.insert(_tableName, itemMap);
+    return db.insert(_tableName, item.toMap());
   }
 
   Future<List<Item>> findAll() async {
@@ -56,38 +41,10 @@ class ItemDAO {
     final List<Item> items = [];
 
     for (Map<String, dynamic> row in result) {
-      final item = Item(
-        row[_id],
-        row[_name],
-        row[_quantity],
-        row[_usagePercentage],
-        _itemConsumptionLevelFromString(row[_consumptionLevel]),
-        row[_slotId],
-        row[_workspaceId],
-        row[_userId],
-        DateTime.parse(row[_insertDateTime]),
-        row[_updateDateTime] == 'null' ? null : DateTime(row[_updateDateTime]),
-      );
-
-      item.active = row[_active] == 1;
-      items.add(item);
+      items.add(Item.fromMap(row));
     }
     return items;
   }
 
-  ItemConsumptionLevel _itemConsumptionLevelFromString(String str) {
-    if (str == ItemConsumptionLevel.safe.text) {
-      return ItemConsumptionLevel.safe;
-    }
 
-    if (str == ItemConsumptionLevel.moderate.text) {
-      return ItemConsumptionLevel.moderate;
-    }
-
-    if (str == ItemConsumptionLevel.severe.text) {
-      return ItemConsumptionLevel.severe;
-    }
-
-    return ItemConsumptionLevel.critical;
-  }
 }
