@@ -82,7 +82,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
 
     for (var workspace in workspaces) {
       buttons.add(GridButton(
-        text: workspace.name,
+        text: workspace.name!,
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
