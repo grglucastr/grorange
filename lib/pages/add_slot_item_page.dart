@@ -3,10 +3,16 @@ import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/database/dao/item_dao.dart';
 import 'package:grorange/models/enums/item_consumption_level.dart';
 import 'package:grorange/models/item.dart';
+import 'package:grorange/models/slot.dart';
 import 'package:uuid/uuid.dart';
 
 class AddSlotItemPage extends StatefulWidget {
-  const AddSlotItemPage({super.key});
+  final Slot slot;
+
+  const AddSlotItemPage({
+    required this.slot,
+    super.key,
+  });
 
   @override
   State<AddSlotItemPage> createState() => _AddSlotItemPageState();
@@ -116,8 +122,8 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
       int.parse(_quantityController.text),
       consumption,
       _getLevel(consumption),
-      uuid.v4(),
-      uuid.v4(),
+      widget.slot.id!,
+      widget.slot.workspaceId,
       uuid.v4(),
       DateTime.now(),
       null,
@@ -125,19 +131,18 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
 
     var dao = ItemDAO();
     await dao.save(item);
-
   }
 
-  ItemConsumptionLevel _getLevel(double consumption){
-    if(consumption >= .7) {
+  ItemConsumptionLevel _getLevel(double consumption) {
+    if (consumption >= .7) {
       return ItemConsumptionLevel.safe;
     }
 
-    if(consumption >= .4) {
+    if (consumption >= .4) {
       return ItemConsumptionLevel.moderate;
     }
 
-    if(consumption >= .39) {
+    if (consumption >= .39) {
       return ItemConsumptionLevel.severe;
     }
 

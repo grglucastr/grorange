@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/models/slot.dart';
+import 'package:grorange/models/workspace.dart';
 import 'package:uuid/uuid.dart';
 
 class AddSlotPage extends StatefulWidget {
-  const AddSlotPage({super.key});
+  final Workspace workspace;
+  const AddSlotPage({required this.workspace, super.key});
 
   @override
   State<AddSlotPage> createState() => _AddSlotPageState();
@@ -75,7 +77,7 @@ class _AddSlotPageState extends State<AddSlotPage> {
       uuid.v4(),
       _slotNameController.text,
       uuid.v4(),
-      uuid.v4(),
+      widget.workspace.id!,
       DateTime.now(),
       null,
     );

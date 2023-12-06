@@ -41,7 +41,7 @@ class _SlotsPageState extends State<SlotsPage> {
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute(
-                builder: (context) => const AddSlotPage(),
+                builder: (context) => AddSlotPage(workspace: widget.workspace),
               ))
               .then((value) => setState(() {}));
         },
