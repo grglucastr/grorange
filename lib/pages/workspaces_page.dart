@@ -84,11 +84,13 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
       buttons.add(GridButton(
         text: workspace.name!,
         onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const SlotsPage(),
-            ),
-          );
+          Navigator.of(context)
+              .push(
+                MaterialPageRoute(
+                  builder: (context) => SlotsPage(workspace: workspace),
+                ),
+              )
+              .then((value) => setState(() {}));
         },
       ));
     }
