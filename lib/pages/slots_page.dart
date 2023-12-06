@@ -57,7 +57,7 @@ class _SlotsPageState extends State<SlotsPage> {
             height: 60,
           ),
           FutureBuilder<List<Slot>>(
-            future: dao.findAll(),
+            future: dao.findAll(widget.workspace.id!),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:

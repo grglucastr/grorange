@@ -3,7 +3,6 @@ import 'package:grorange/models/slot.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SlotDAO {
-
   static const String _id = 'id';
   static const String _name = 'name';
   static const String _userId = 'user_id';
@@ -23,7 +22,6 @@ class SlotDAO {
       '$_updateDateTime TEXT, '
       '$_active INTEGER)';
 
-
   Future<int> save(Slot slot) async {
     final Database db = await getDatabase();
     return db.insert(tableName, slot.toMap());
@@ -34,18 +32,19 @@ class SlotDAO {
     return await db.delete(tableName, where: '$_id=?', whereArgs: [slotID]);
   }
 
-  Future<List<Slot>> findAll() async {
+  Future<List<Slot>> findAll(String workspaceID) async {
     final Database db = await getDatabase();
-    List<Map<String, dynamic>> rows = await db.query(tableName);
+    List<Map<String, dynamic>> rows = await db.query(
+      tableName,
+      where: '$_workspaceId=?',
+      whereArgs: [workspaceID],
+    );
 
     List<Slot> slots = List.empty(growable: true);
-    for(Map<String, dynamic> row in rows){
+    for (Map<String, dynamic> row in rows) {
       slots.add(Slot.fromMap(row));
     }
 
     return slots;
   }
-
-
-
 }

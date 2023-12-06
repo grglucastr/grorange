@@ -35,9 +35,14 @@ class ItemDAO {
     return db.insert(_tableName, item.toMap());
   }
 
-  Future<List<Item>> findAll() async {
+  Future<List<Item>> findAll(String slotID) async {
     final Database db = await getDatabase();
-    final List<Map<String, dynamic>> result = await db.query(_tableName);
+    final List<Map<String, dynamic>> result = await db.query(
+      _tableName,
+      where: '$_slotId=?',
+      whereArgs: [slotID],
+    );
+
     final List<Item> items = [];
 
     for (Map<String, dynamic> row in result) {
@@ -50,5 +55,4 @@ class ItemDAO {
     final Database db = await getDatabase();
     return db.delete(_tableName, where: 'id=?', whereArgs: [itemID]);
   }
-
 }

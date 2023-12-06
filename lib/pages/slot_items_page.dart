@@ -75,7 +75,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
             ),
             Expanded(
               child: FutureBuilder<List<Item>>(
-                future: dao.findAll(),
+                future: dao.findAll(widget.slot.id!),
                 builder: (context, snapshot) {
                   if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                     final List<Item> content = snapshot.data!;
