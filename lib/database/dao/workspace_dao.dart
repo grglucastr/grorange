@@ -23,7 +23,12 @@ class WorkspaceDAO {
 
   Future<int> save(Workspace workspace) async {
     final Database db = await getDatabase();
-    return db.insert(tableName, workspace.toMap());
+    return await db.insert(tableName, workspace.toMap());
+  }
+
+  Future<int> delete(String workspaceID) async {
+    final Database db = await getDatabase();
+    return await db.delete(tableName, where: '$_id=?', whereArgs: [workspaceID]);
   }
 
   Future<List<Workspace>> findAll() async {
