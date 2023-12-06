@@ -97,11 +97,15 @@ class _SlotsPageState extends State<SlotsPage> {
       buttons.add(GridButton(
         text: slot.name,
         onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const SlotItemsPage(),
-            ),
-          );
+          Navigator.of(context)
+              .push(
+                MaterialPageRoute(
+                  builder: (context) => SlotItemsPage(
+                    slot: slot,
+                  ),
+                ),
+              )
+              .then((value) => setState(() {}));
         },
       ));
     }

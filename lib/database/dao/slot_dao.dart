@@ -29,6 +29,11 @@ class SlotDAO {
     return db.insert(tableName, slot.toMap());
   }
 
+  Future<int> delete(String slotID) async {
+    final Database db = await getDatabase();
+    return await db.delete(tableName, where: '$_id=?', whereArgs: [slotID]);
+  }
+
   Future<List<Slot>> findAll() async {
     final Database db = await getDatabase();
     List<Map<String, dynamic>> rows = await db.query(tableName);

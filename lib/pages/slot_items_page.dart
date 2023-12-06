@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:grorange/components/grid_empty.dart';
-import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/components/page_app_bar_with_actions.dart';
 import 'package:grorange/database/dao/item_dao.dart';
+import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/models/item.dart';
+import 'package:grorange/models/slot.dart';
 import 'package:grorange/pages/add_slot_item_page.dart';
 
 class SlotItemsPage extends StatefulWidget {
-  const SlotItemsPage({super.key});
+  final Slot slot;
+
+  const SlotItemsPage({required this.slot, super.key});
 
   @override
   State<SlotItemsPage> createState() => _SlotItemsPageState();
@@ -15,12 +19,22 @@ class SlotItemsPage extends StatefulWidget {
 class _SlotItemsPageState extends State<SlotItemsPage> {
   final TextEditingController _searchItemsController = TextEditingController();
   var dao = ItemDAO();
+  var slotDAO = SlotDAO();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PageAppBar(
-        title: 'Fridge',
+      appBar: PageAppBarWithActions(
+        title: widget.slot.name,
+        actions: [
+          IconButton(
+            onPressed: () {
+              slotDAO.delete(widget.slot.id!);
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.delete),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
