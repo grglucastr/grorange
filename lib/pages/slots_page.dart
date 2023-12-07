@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grorange/components/dialog_delete_confirm.dart';
 import 'package:grorange/components/grid_button.dart';
 import 'package:grorange/components/grid_empty.dart';
 import 'package:grorange/components/grid_options.dart';
@@ -11,6 +12,7 @@ import 'package:grorange/models/slot.dart';
 import 'package:grorange/models/workspace.dart';
 import 'package:grorange/pages/add_slot_page.dart';
 import 'package:grorange/pages/slot_items_page.dart';
+import 'package:grorange/pages/workspaces_page.dart';
 
 class SlotsPage extends StatefulWidget {
   final Workspace workspace;
@@ -31,8 +33,26 @@ class _SlotsPageState extends State<SlotsPage> {
       appBar: PageAppBarWithActions(title: widget.workspace.name!, actions: [
         IconButton(
           onPressed: () {
-            workspaceDAO.delete(widget.workspace.id!);
-            Navigator.pop(context);
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return DialogDeleteConfirm(
+                    title: 'Delete Workspace',
+                    description:
+                        'Delete workspace: ${widget.workspace.name}\n\nWARNING:\nAll slots and items related this workspace will be lost. Are you sure you want to proceed?',
+                    onConfirm: () {
+                      workspaceDAO.delete(widget.workspace.id!);
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const WorkspacesPage()),
+                        (route) => false,
+                      );
+                    },
+                  );
+                });
+            //workspaceDAO.delete(widget.workspace.id!);
+            //Navigator.pop(context);
           },
           icon: const Icon(Icons.delete),
         )
