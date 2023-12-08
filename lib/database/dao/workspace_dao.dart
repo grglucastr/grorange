@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:grorange/database/app_database.dart';
 import 'package:grorange/models/workspace.dart';
 import 'package:sqflite/sqflite.dart';
@@ -29,6 +30,20 @@ class WorkspaceDAO {
   Future<int> delete(String workspaceID) async {
     final Database db = await getDatabase();
     return await db.delete(tableName, where: '$_id=?', whereArgs: [workspaceID]);
+  }
+
+  Future<int> updateName(String workspaceID, String newName) async {
+    final Database db = await getDatabase();
+    const String sql = 'UPDATE $tableName SET $_name = ? WHERE $_id = ?';
+    final int rowsUpdated = await db.rawUpdate(sql, [newName, workspaceID]);
+    if(rowsUpdated > 0) {
+      debugPrint('Updated successfully');
+    }else{
+      debugPrint('Error while updating');
+    }
+
+    return rowsUpdated;
+
   }
 
   Future<List<Workspace>> findAll() async {
