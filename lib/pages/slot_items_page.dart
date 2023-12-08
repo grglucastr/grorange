@@ -4,7 +4,7 @@ import 'package:grorange/components/dialog_delete_confirm.dart';
 import 'package:grorange/components/grid_empty.dart';
 import 'package:grorange/components/page_app_bar_with_actions.dart';
 import 'package:grorange/controllers/slot_controller.dart';
-import 'package:grorange/controllers/workspace_controller';
+import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/item_dao.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/models/item.dart';

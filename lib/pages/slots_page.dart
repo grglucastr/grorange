@@ -8,7 +8,7 @@ import 'package:grorange/components/loading.dart';
 import 'package:grorange/components/page_app_bar_with_actions.dart';
 import 'package:grorange/components/page_title.dart';
 import 'package:grorange/controllers/slot_controller.dart';
-import 'package:grorange/controllers/workspace_controller';
+import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/database/dao/workspace_dao.dart';
 import 'package:grorange/models/slot.dart';
