@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/components/dialog_delete_confirm.dart';
+import 'package:grorange/components/dialog_edit_names.dart';
 import 'package:grorange/components/grid_button.dart';
 import 'package:grorange/components/grid_empty.dart';
 import 'package:grorange/components/grid_options.dart';
@@ -12,6 +13,7 @@ import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/database/dao/workspace_dao.dart';
 import 'package:grorange/models/slot.dart';
+import 'package:grorange/models/workspace.dart';
 import 'package:grorange/pages/slot_items_page.dart';
 import 'package:grorange/pages/workspaces_page.dart';
 
@@ -26,8 +28,7 @@ class SlotsPage extends StatefulWidget {
 
 class _SlotsPageState extends State<SlotsPage> {
   var workspaceDAO = WorkspaceDAO();
-  final WorkspaceController workspaceController =
-      Get.put(WorkspaceController());
+  final WorkspaceController workspaceController = Get.find();
   final SlotController slotController = Get.put(SlotController());
 
   @override
@@ -37,6 +38,10 @@ class _SlotsPageState extends State<SlotsPage> {
       appBar: PageAppBarWithActions(
         title: workspaceController.workspace.name!,
         actions: [
+          IconButton(
+            onPressed: () => _showEditDialog(),
+            icon: const Icon(Icons.edit),
+          ),
           IconButton(
             onPressed: () => _showDeleteDialog(),
             icon: const Icon(Icons.delete),
@@ -133,6 +138,37 @@ class _SlotsPageState extends State<SlotsPage> {
               MaterialPageRoute(builder: (context) => const WorkspacesPage()),
               (route) => true,
             );
+          },
+        );
+      },
+    );
+  }
+
+  void _showEditDialog() {
+    final TextEditingController titleController = TextEditingController();
+    titleController.text = workspaceController.workspace.name!;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DialogEditNames(
+          title: 'New workspace name',
+          controller: titleController,
+          onConfirm: () {
+            workspaceDAO
+                .updateName(
+              workspaceController.workspace.id!,
+              titleController.text,
+            )
+                .then((value) {
+              if (value == 1) {
+                Workspace wk = workspaceController.workspace;
+                wk.name = titleController.text;
+
+                workspaceController.workspace = wk;
+              }
+            });
+            Navigator.pop(context);
           },
         );
       },
