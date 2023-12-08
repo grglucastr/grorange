@@ -50,8 +50,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
               height: 60,
             ),
             FutureBuilder<List<Workspace>>(
-                future: Future.delayed(const Duration(seconds: 1))
-                    .then((value) => dao.findAll()),
+                future: dao.findAll(),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.none:
