@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grorange/components/grid_button.dart';
 import 'package:grorange/components/grid_empty.dart';
 import 'package:grorange/components/grid_options.dart';
 import 'package:grorange/components/loading.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/components/page_title.dart';
+import 'package:grorange/controllers/workspace_controller';
 import 'package:grorange/database/dao/workspace_dao.dart';
 import 'package:grorange/models/workspace.dart';
 import 'package:grorange/pages/add_workspace_page.dart';
@@ -18,6 +20,9 @@ class WorkspacesPage extends StatefulWidget {
 }
 
 class _WorkspacesPageState extends State<WorkspacesPage> {
+
+  var workspaceController = Get.put(WorkspaceController());
+
   @override
   Widget build(BuildContext context) {
     var dao = WorkspaceDAO();
@@ -84,10 +89,12 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
       buttons.add(GridButton(
         text: workspace.name!,
         onTap: () {
+          workspaceController.workspace = workspace;
+
           Navigator.of(context)
               .push(
                 MaterialPageRoute(
-                  builder: (context) => SlotsPage(workspace: workspace),
+                  builder: (context) => const SlotsPage(),
                 ),
               )
               .then((value) => setState(() {}));

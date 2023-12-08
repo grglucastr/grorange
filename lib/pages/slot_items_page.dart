@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:grorange/components/dialog_delete_confirm.dart';
 import 'package:grorange/components/grid_empty.dart';
 import 'package:grorange/components/page_app_bar_with_actions.dart';
+import 'package:grorange/controllers/slot_controller.dart';
+import 'package:grorange/controllers/workspace_controller';
 import 'package:grorange/database/dao/item_dao.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/models/item.dart';
-import 'package:grorange/models/slot.dart';
 import 'package:grorange/pages/add_slot_item_page.dart';
+import 'package:grorange/pages/slots_page.dart';
 
 class SlotItemsPage extends StatefulWidget {
-  final Slot slot;
-
-  const SlotItemsPage({required this.slot, super.key});
+  const SlotItemsPage({super.key});
 
   @override
   State<SlotItemsPage> createState() => _SlotItemsPageState();
@@ -18,6 +20,9 @@ class SlotItemsPage extends StatefulWidget {
 
 class _SlotItemsPageState extends State<SlotItemsPage> {
   final TextEditingController _searchItemsController = TextEditingController();
+  final SlotController slotController = Get.find();
+  final WorkspaceController workspaceController = Get.find();
+
   var dao = ItemDAO();
   var slotDAO = SlotDAO();
 
@@ -25,12 +30,11 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PageAppBarWithActions(
-        title: widget.slot.name,
+        title: slotController.slot.name,
         actions: [
           IconButton(
             onPressed: () {
-              slotDAO.delete(widget.slot.id!);
-              Navigator.pop(context);
+              _showDeleteDialog();
             },
             icon: const Icon(Icons.delete),
           ),
@@ -40,7 +44,8 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute(
-                builder: (context) => AddSlotItemPage(slot: widget.slot),
+                builder: (context) =>
+                    AddSlotItemPage(slot: slotController.slot),
               ))
               .then((value) => setState(() {}));
         },
@@ -75,7 +80,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
             ),
             Expanded(
               child: FutureBuilder<List<Item>>(
-                future: dao.findAll(widget.slot.id!),
+                future: dao.findAll(slotController.slot.id!),
                 builder: (context, snapshot) {
                   if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                     final List<Item> content = snapshot.data!;
@@ -150,6 +155,30 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
         color: Colors.white,
         fontWeight: FontWeight.bold,
       ),
+    );
+  }
+
+  void _showDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DialogDeleteConfirm(
+          title: 'Delete Slot',
+          description:
+              'Delete slot: ${slotController.slot.name}\n\nWARNING:\nAll items related to this slot will be lost. Are you sure you want to proceed?',
+          onConfirm: () {
+            slotDAO.delete(slotController.slot.id!);
+
+            // TODO: fix this
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SlotsPage(),
+                ),
+                (route) => true);
+          },
+        );
+      },
     );
   }
 }

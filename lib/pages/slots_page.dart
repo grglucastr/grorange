@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grorange/components/dialog_delete_confirm.dart';
 import 'package:grorange/components/grid_button.dart';
 import 'package:grorange/components/grid_empty.dart';
@@ -6,18 +7,18 @@ import 'package:grorange/components/grid_options.dart';
 import 'package:grorange/components/loading.dart';
 import 'package:grorange/components/page_app_bar_with_actions.dart';
 import 'package:grorange/components/page_title.dart';
+import 'package:grorange/controllers/slot_controller.dart';
+import 'package:grorange/controllers/workspace_controller';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/database/dao/workspace_dao.dart';
 import 'package:grorange/models/slot.dart';
-import 'package:grorange/models/workspace.dart';
-import 'package:grorange/pages/add_slot_page.dart';
 import 'package:grorange/pages/slot_items_page.dart';
 import 'package:grorange/pages/workspaces_page.dart';
 
-class SlotsPage extends StatefulWidget {
-  final Workspace workspace;
+import 'add_slot_page.dart';
 
-  const SlotsPage({required this.workspace, super.key});
+class SlotsPage extends StatefulWidget {
+  const SlotsPage({super.key});
 
   @override
   State<SlotsPage> createState() => _SlotsPageState();
@@ -25,43 +26,29 @@ class SlotsPage extends StatefulWidget {
 
 class _SlotsPageState extends State<SlotsPage> {
   var workspaceDAO = WorkspaceDAO();
+  final WorkspaceController workspaceController =
+      Get.put(WorkspaceController());
+  final SlotController slotController = Get.put(SlotController());
 
   @override
   Widget build(BuildContext context) {
     var dao = SlotDAO();
     return Scaffold(
-      appBar: PageAppBarWithActions(title: widget.workspace.name!, actions: [
-        IconButton(
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return DialogDeleteConfirm(
-                    title: 'Delete Workspace',
-                    description:
-                        'Delete workspace: ${widget.workspace.name}\n\nWARNING:\nAll slots and items related this workspace will be lost. Are you sure you want to proceed?',
-                    onConfirm: () {
-                      workspaceDAO.delete(widget.workspace.id!);
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const WorkspacesPage()),
-                        (route) => false,
-                      );
-                    },
-                  );
-                });
-            //workspaceDAO.delete(widget.workspace.id!);
-            //Navigator.pop(context);
-          },
-          icon: const Icon(Icons.delete),
-        )
-      ]),
+      appBar: PageAppBarWithActions(
+        title: workspaceController.workspace.name!,
+        actions: [
+          IconButton(
+            onPressed: () => _showDeleteDialog(),
+            icon: const Icon(Icons.delete),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute(
-                builder: (context) => AddSlotPage(workspace: widget.workspace),
+                builder: (context) =>
+                    AddSlotPage(workspace: workspaceController.workspace),
               ))
               .then((value) => setState(() {}));
         },
@@ -77,7 +64,7 @@ class _SlotsPageState extends State<SlotsPage> {
             height: 60,
           ),
           FutureBuilder<List<Slot>>(
-            future: dao.findAll(widget.workspace.id!),
+            future: dao.findAll(workspaceController.workspace.id!),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
@@ -117,12 +104,11 @@ class _SlotsPageState extends State<SlotsPage> {
       buttons.add(GridButton(
         text: slot.name,
         onTap: () {
+          slotController.slot = slot;
           Navigator.of(context)
               .push(
                 MaterialPageRoute(
-                  builder: (context) => SlotItemsPage(
-                    slot: slot,
-                  ),
+                  builder: (context) => const SlotItemsPage(),
                 ),
               )
               .then((value) => setState(() {}));
@@ -130,5 +116,26 @@ class _SlotsPageState extends State<SlotsPage> {
       ));
     }
     return GridOptions(buttons: buttons);
+  }
+
+  void _showDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DialogDeleteConfirm(
+          title: 'Delete Workspace',
+          description:
+              'Delete workspace: ${workspaceController.workspace.name}\n\nWARNING:\nAll slots and items related this workspace will be lost. Are you sure you want to proceed?',
+          onConfirm: () {
+            workspaceDAO.delete(workspaceController.workspace.id!);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const WorkspacesPage()),
+              (route) => true,
+            );
+          },
+        );
+      },
+    );
   }
 }
