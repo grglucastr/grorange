@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:grorange/controllers/app_bar_controller.dart';
 
 class PageAppBarWithActions extends StatefulWidget
     implements PreferredSizeWidget {
@@ -25,20 +27,20 @@ class PageAppBarWithActions extends StatefulWidget
   State<PageAppBarWithActions> createState() => _PageAppBarWithActionsState();
 }
 
-class _PageAppBarWithActionsState extends State<PageAppBarWithActions> {
+class _PageAppBarWithActionsState<T> extends State<PageAppBarWithActions> {
+  final AppBarController appBarController = Get.find();
+
   @override
   Widget build(BuildContext context) {
-
-    if(widget.showLeadingButton){
+    if (widget.showLeadingButton) {
       return _appBarLeadingButton();
     }
     return _appBarNoLeadingButton();
-
   }
 
   AppBar _appBarNoLeadingButton() {
     return AppBar(
-      title: Text(widget.title),
+      title: Obx(() => Text(appBarController.title.value)),
       backgroundColor: Colors.blue,
       foregroundColor: Colors.white,
       actions: widget.actions,
@@ -47,7 +49,7 @@ class _PageAppBarWithActionsState extends State<PageAppBarWithActions> {
 
   AppBar _appBarLeadingButton() {
     return AppBar(
-      title: Text(widget.title),
+      title: Obx(() => Text(appBarController.title.value)),
       backgroundColor: Colors.blue,
       foregroundColor: Colors.white,
       actions: widget.actions,
