@@ -8,6 +8,7 @@ import 'package:grorange/components/grid_options.dart';
 import 'package:grorange/components/loading.dart';
 import 'package:grorange/components/page_app_bar_with_actions.dart';
 import 'package:grorange/components/page_title.dart';
+import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/slot_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
@@ -29,14 +30,16 @@ class SlotsPage extends StatefulWidget {
 class _SlotsPageState extends State<SlotsPage> {
   var workspaceDAO = WorkspaceDAO();
   final WorkspaceController workspaceController = Get.find();
-  final SlotController slotController = Get.put(SlotController());
+  final SlotController slotController = Get.find();
+  final AppBarController appBarController = Get.find();
+
 
   @override
   Widget build(BuildContext context) {
     var dao = SlotDAO();
     return Scaffold(
       appBar: PageAppBarWithActions(
-        title: workspaceController.workspace.name!,
+        title: Get.find<WorkspaceController>().workspace.name!,
         actions: [
           IconButton(
             onPressed: () => _showEditDialog(),
@@ -52,9 +55,9 @@ class _SlotsPageState extends State<SlotsPage> {
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute(
-                builder: (context) =>
-                    AddSlotPage(workspace: workspaceController.workspace),
-              ))
+            builder: (context) =>
+                AddSlotPage(workspace: workspaceController.workspace),
+          ))
               .then((value) => setState(() {}));
         },
         child: const Icon(Icons.add),
@@ -110,13 +113,14 @@ class _SlotsPageState extends State<SlotsPage> {
         text: slot.name,
         onTap: () {
           slotController.slot = slot;
+          appBarController.title.value = slot.name;
           Navigator.of(context)
               .push(
                 MaterialPageRoute(
                   builder: (context) => const SlotItemsPage(),
                 ),
               )
-              .then((value) => setState(() {}));
+              .then((value) => appBarController.title.value = workspaceController.workspace.name!);
         },
       ));
     }
@@ -157,18 +161,17 @@ class _SlotsPageState extends State<SlotsPage> {
           onConfirm: () {
             workspaceDAO
                 .updateName(
-              workspaceController.workspace.id!,
-              titleController.text,
-            )
+                    workspaceController.workspace.id!, titleController.text)
                 .then((value) {
               if (value == 1) {
                 Workspace wk = workspaceController.workspace;
                 wk.name = titleController.text;
-
                 workspaceController.workspace = wk;
+                appBarController.title.value = titleController.text;
               }
+              Navigator.pop(context);
             });
-            Navigator.pop(context);
+
           },
         );
       },

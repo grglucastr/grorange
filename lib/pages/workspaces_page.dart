@@ -6,6 +6,7 @@ import 'package:grorange/components/grid_options.dart';
 import 'package:grorange/components/loading.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/components/page_title.dart';
+import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/workspace_dao.dart';
 import 'package:grorange/models/workspace.dart';
@@ -21,7 +22,8 @@ class WorkspacesPage extends StatefulWidget {
 
 class _WorkspacesPageState extends State<WorkspacesPage> {
 
-  var workspaceController = Get.put(WorkspaceController());
+  WorkspaceController workspaceController = Get.find();
+  AppBarController appBarController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +91,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
         text: workspace.name!,
         onTap: () {
           workspaceController.workspace = workspace;
+          appBarController.title.value = workspace.name!;
 
           Navigator.of(context)
               .push(
