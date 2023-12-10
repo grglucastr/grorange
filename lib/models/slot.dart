@@ -1,7 +1,7 @@
 import 'package:grorange/models/base.dart';
 
 class Slot extends Base {
-  final String name;
+  String? name;
   final String userId;
   final String workspaceId;
 

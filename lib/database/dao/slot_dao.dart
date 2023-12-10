@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:grorange/database/app_database.dart';
 import 'package:grorange/models/slot.dart';
 import 'package:sqflite/sqflite.dart';
@@ -30,6 +31,18 @@ class SlotDAO {
   Future<int> delete(String slotID) async {
     final Database db = await getDatabase();
     return await db.delete(tableName, where: '$_id=?', whereArgs: [slotID]);
+  }
+
+  Future<int> updateName(String slotID, String newName) async {
+    final Database db = await getDatabase();
+    const String sql = 'UPDATE $tableName SET $_name = ? WHERE $_id = ?';
+    final int rowsUpdated = await db.rawUpdate(sql, [newName, slotID]);
+    if(rowsUpdated > 0) {
+      debugPrint('Updated successfully');
+    }else{
+      debugPrint('Error while updating');
+    }
+    return rowsUpdated;
   }
 
   Future<List<Slot>> findAll(String workspaceID) async {

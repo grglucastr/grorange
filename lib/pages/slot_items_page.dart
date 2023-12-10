@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/components/dialog_delete_confirm.dart';
+import 'package:grorange/components/dialog_edit_names.dart';
 import 'package:grorange/components/grid_empty.dart';
 import 'package:grorange/components/page_app_bar_with_actions.dart';
+import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/controllers/slot_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/item_dao.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/models/item.dart';
+import 'package:grorange/models/slot.dart';
 import 'package:grorange/pages/add_slot_item_page.dart';
 import 'package:grorange/pages/slots_page.dart';
 
@@ -24,6 +27,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
   final SlotController slotController = Get.find();
   final WorkspaceController workspaceController = Get.find();
   final ItemController itemController = Get.find();
+  final AppBarController appBarController = Get.find();
 
   var dao = ItemDAO();
   var slotDAO = SlotDAO();
@@ -32,12 +36,14 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PageAppBarWithActions(
-        title: slotController.slot.name,
+        title: slotController.slot.name!,
         actions: [
           IconButton(
-            onPressed: () {
-              _showDeleteDialog();
-            },
+            onPressed: () => _showEditDialog(),
+            icon: const Icon(Icons.edit),
+          ),
+          IconButton(
+            onPressed: () => _showDeleteDialog(),
             icon: const Icon(Icons.delete),
           ),
         ],
@@ -210,6 +216,37 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
           },
           title: 'Delete Item',
           description: 'Are you sure you want to remove this item ${itemController.item.name} from this slot?',
+        );
+      },
+    );
+  }
+
+  void _showEditDialog() {
+    final TextEditingController titleController = TextEditingController();
+
+    debugPrint('value in controller: ${slotController.slot.toString()}');
+    titleController.text = slotController.slot.name!;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DialogEditNames(
+          title: 'New workspace name',
+          controller: titleController,
+          onConfirm: () {
+            slotDAO
+                .updateName(
+                slotController.slot.id!, titleController.text)
+                .then((value) {
+              if (value == 1) {
+                Slot slot = slotController.slot;
+                slot.name = titleController.text;
+                slotController.slot = slot;
+                appBarController.title.value = titleController.text;
+              }
+              Navigator.pop(context);
+            });
+          },
         );
       },
     );

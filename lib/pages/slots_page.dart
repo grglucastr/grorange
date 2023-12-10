@@ -33,7 +33,6 @@ class _SlotsPageState extends State<SlotsPage> {
   final SlotController slotController = Get.find();
   final AppBarController appBarController = Get.find();
 
-
   @override
   Widget build(BuildContext context) {
     var dao = SlotDAO();
@@ -55,9 +54,9 @@ class _SlotsPageState extends State<SlotsPage> {
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute(
-            builder: (context) =>
-                AddSlotPage(workspace: workspaceController.workspace),
-          ))
+                builder: (context) =>
+                    AddSlotPage(workspace: workspaceController.workspace),
+              ))
               .then((value) => setState(() {}));
         },
         child: const Icon(Icons.add),
@@ -110,17 +109,18 @@ class _SlotsPageState extends State<SlotsPage> {
 
     for (var slot in slots) {
       buttons.add(GridButton(
-        text: slot.name,
+        text: slot.name!,
         onTap: () {
           slotController.slot = slot;
-          appBarController.title.value = slot.name;
-          Navigator.of(context)
-              .push(
-                MaterialPageRoute(
-                  builder: (context) => const SlotItemsPage(),
-                ),
-              )
-              .then((value) => appBarController.title.value = workspaceController.workspace.name!);
+          appBarController.title.value = slot.name!;
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const SlotItemsPage(),
+            ),
+          ).then((value) {
+            appBarController.title.value = workspaceController.workspace.name!;
+            setState(() {});
+          });
         },
       ));
     }
@@ -171,7 +171,6 @@ class _SlotsPageState extends State<SlotsPage> {
               }
               Navigator.pop(context);
             });
-
           },
         );
       },
