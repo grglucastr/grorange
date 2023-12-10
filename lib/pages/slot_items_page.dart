@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:grorange/components/dialog_delete_confirm.dart';
 import 'package:grorange/components/grid_empty.dart';
 import 'package:grorange/components/page_app_bar_with_actions.dart';
+import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/controllers/slot_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/item_dao.dart';
@@ -22,6 +23,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
   final TextEditingController _searchItemsController = TextEditingController();
   final SlotController slotController = Get.find();
   final WorkspaceController workspaceController = Get.find();
+  final ItemController itemController = Get.find();
 
   var dao = ItemDAO();
   var slotDAO = SlotDAO();
@@ -108,12 +110,13 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
   }
 
   Dismissible _renderDismissibleItem(Item item) {
-    String itemID = item.id!;
+    itemController.item = item;
+
     return Dismissible(
       key: UniqueKey(),
-      onDismissed: (direction) {
-        setState(() => {dao.delete(itemID)});
-
+      confirmDismiss: _handleItemRemovalConfirmation,
+      onDismissed: (direction){
+        dao.delete(item.id!);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('${item.name} removed')));
       },
@@ -133,6 +136,20 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
       child: _renderListTile(item),
     );
   }
+
+  Future<bool?> _handleItemRemovalConfirmation(DismissDirection dismissDirection) async {
+      switch(dismissDirection){
+        case DismissDirection.endToStart:
+        case DismissDirection.startToEnd:
+          return await _showDeleteItemDialog();
+        case DismissDirection.vertical:
+        case DismissDirection.horizontal:
+        case DismissDirection.up:
+        case DismissDirection.down:
+        case DismissDirection.none:
+          return false;
+      }
+    }
 
   ListTile _renderListTile(Item item) {
     return ListTile(
@@ -181,4 +198,21 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
       },
     );
   }
+
+  Future<bool?> _showDeleteItemDialog() {
+    final ItemController itemController = Get.find();
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return DialogDeleteConfirm(
+          onConfirm: () {
+            Navigator.pop(context, true);
+          },
+          title: 'Delete Item',
+          description: 'Are you sure you want to remove this item ${itemController.item.name} from this slot?',
+        );
+      },
+    );
+  }
+  
 }
