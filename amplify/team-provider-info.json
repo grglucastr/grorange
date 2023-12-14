@@ -10,6 +10,11 @@
       "StackName": "amplify-grorangeapp-dev-04551",
       "StackId": "arn:aws:cloudformation:us-east-1:947434607925:stack/amplify-grorangeapp-dev-04551/21cf8760-9a1a-11ee-8012-0acc07fa22c1",
       "AmplifyAppId": "d1guzle6deqeku"
+    },
+    "categories": {
+      "auth": {
+        "grorangeappdedc84fc": {}
+      }
     }
   }
 }
