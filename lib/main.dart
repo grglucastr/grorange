@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grorange/app.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/controllers/slot_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
-import 'package:grorange/pages/home_page.dart';
 
 void main() {
   final WorkspaceController wkController = Get.put(WorkspaceController());
@@ -20,9 +20,6 @@ class Grorange extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      home: const Home(),
-    );
+    return const App();
   }
 }
