@@ -1,7 +1,12 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:grorange/controllers/user_controller.dart';
+import 'package:grorange/pages/home_page.dart';
+import 'package:grorange/services/amplify_auth_service.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage ({super.key});
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,10 +16,10 @@ class LoginPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Container(
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   CircleAvatar(
                     backgroundColor: Colors.amber,
                     maxRadius: 60,
@@ -30,15 +35,33 @@ class LoginPage extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
+            SizedBox(
               width: 190,
               child: Column(
                 children: [
                   SizedBox(
                     width: double.maxFinite,
                     child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text("Login with Google"),
+                      onPressed: () {
+                        AmplifyAuthService authService = AmplifyAuthService();
+                        authService.socialSignIn().then((value) {
+                          safePrint('social sign in callback: $value');
+
+                          if (value?.nextStep.signInStep ==
+                              AuthSignInStep.done) {
+                            UserController userController = Get.find();
+                            if (userController.userSignedIn) {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(builder: (context) => const Home()), (route) => false,
+                              );
+                            }
+                            safePrint(
+                                'User signed in? ${userController.userSignedIn}');
+                          }
+                        });
+                      },
+                      child: const Text("Login with Google"),
                     ),
                   ),
                   const SizedBox(
@@ -48,7 +71,7 @@ class LoginPage extends StatelessWidget {
                     width: double.maxFinite,
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: Text("Login with Facebook"),
+                      child: const Text("Login with Facebook"),
                     ),
                   ),
                 ],

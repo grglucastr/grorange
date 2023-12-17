@@ -4,13 +4,15 @@ import 'package:grorange/app.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/controllers/slot_controller.dart';
+import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 
 void main() {
-  final WorkspaceController wkController = Get.put(WorkspaceController());
-  final SlotController slotController = Get.put(SlotController());
-  final AppBarController appBarController = Get.put(AppBarController());
-  final ItemController itemController = Get.put(ItemController());
+  Get.put(WorkspaceController());
+  Get.put(SlotController());
+  Get.put(AppBarController());
+  Get.put(ItemController());
+  Get.put(UserController());
 
   runApp(const Grorange());
 }
