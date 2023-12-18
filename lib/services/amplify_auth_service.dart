@@ -2,6 +2,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:get/get.dart';
 import 'package:grorange/controllers/user_controller.dart';
+import 'package:grorange/models/user.dart';
 
 class AmplifyAuthService {
   UserController userController = Get.find();
@@ -88,17 +89,26 @@ class AmplifyAuthService {
   }
 
   Future<void> _handleSignInResult(SignInResult result) async {
-    if(result.nextStep.signInStep == AuthSignInStep.done){
+    if (result.nextStep.signInStep == AuthSignInStep.done) {
       safePrint('Sign in is complete');
 
-      if(result.isSignedIn){
+      const DateTime? dateTime = null;
+
+      if (result.isSignedIn) {
         userController.userSignedIn = true;
+        AuthUser authUser = await getCurrentUser();
+        userController.user = User(
+          authUser.userId,
+          authUser.username,
+          dateTime,
+          dateTime,
+        );
       }
     }
   }
 
   Future<SignInResult?> socialSignIn() async {
-    try{
+    try {
       final result = await Amplify.Auth.signInWithWebUI(
         provider: AuthProvider.google,
       );
@@ -107,7 +117,6 @@ class AmplifyAuthService {
       _handleSignInResult(result);
 
       return result;
-
     } on AuthException catch (e) {
       safePrint('Error signing in: ${e.message}');
     }
@@ -119,7 +128,6 @@ class AmplifyAuthService {
       final result = await Amplify.Auth.signOut();
       _handleSignOut(result);
       return result;
-
     } on AuthException catch (e) {
       safePrint('Error signing out in: ${e.message}');
     }
@@ -129,7 +137,7 @@ class AmplifyAuthService {
     safePrint('Sign out result: $result');
 
     result as CognitoSignOutResult;
-    if(result.signedOutLocally){
+    if (result.signedOutLocally) {
       userController.userSignedIn = false;
     }
   }
