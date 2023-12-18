@@ -7,6 +7,7 @@ import 'package:grorange/components/loading.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/components/page_title.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
+import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/workspace_dao.dart';
 import 'package:grorange/models/workspace.dart';
@@ -24,13 +25,16 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
 
   WorkspaceController workspaceController = Get.find();
   AppBarController appBarController = Get.find();
+  UserController userController = Get.find();
+
 
   @override
   Widget build(BuildContext context) {
     var dao = WorkspaceDAO();
+
     return Scaffold(
-        appBar: const PageAppBar(
-          title: 'Welcome, George!',
+        appBar: PageAppBar(
+          title: 'Welcome, ${userController.user.name}',
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
