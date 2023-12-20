@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:grorange/controllers/user_controller.dart';
+import 'package:grorange/pages/login_logout_intermediate_page.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage ({super.key});
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,10 +14,10 @@ class LoginPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Container(
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   CircleAvatar(
                     backgroundColor: Colors.amber,
                     maxRadius: 60,
@@ -30,15 +33,15 @@ class LoginPage extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
+            SizedBox(
               width: 190,
               child: Column(
                 children: [
                   SizedBox(
                     width: double.maxFinite,
                     child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text("Login with Google"),
+                      onPressed: () => _redirectToPleaseWait(context),
+                      child: const Text("Login with Google"),
                     ),
                   ),
                   const SizedBox(
@@ -48,7 +51,7 @@ class LoginPage extends StatelessWidget {
                     width: double.maxFinite,
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: Text("Login with Facebook"),
+                      child: const Text("Login with Facebook"),
                     ),
                   ),
                 ],
@@ -57,6 +60,16 @@ class LoginPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _redirectToPleaseWait(BuildContext context) {
+    UserController userController = Get.find();
+    userController.loginInProgress = true;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginLogoutIntermediatePage()),
+      (route) => false,
     );
   }
 }

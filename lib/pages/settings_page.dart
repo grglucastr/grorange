@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/controllers/user_controller.dart';
+import 'package:grorange/pages/login_logout_intermediate_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -11,7 +14,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    List<ListTile> options = getOptions();
+    List<ListTile> options = getOptions(context);
 
     return Scaffold(
         appBar: const PageAppBar(title: 'Settings',),
@@ -22,21 +25,32 @@ class _SettingsPageState extends State<SettingsPage> {
         ));
   }
 
-  List<ListTile> getOptions() {
+  List<ListTile> getOptions(BuildContext context) {
     final List<ListTile> options = List.empty(growable: true);
 
     ListTile changePassword = const ListTile(
       title: Text('Change Password'),
     );
 
-    ListTile logout = const ListTile(
-      title: Text('Logout'),
+    ListTile logout =  ListTile(
+      title: const Text('Logout'),
       textColor: Colors.white,
       tileColor: Colors.red,
+      onTap: () => _redirectToPleaseWait(context),
     );
 
     options.add(changePassword);
     options.add(logout);
     return options;
+  }
+
+  void _redirectToPleaseWait(BuildContext context) {
+    UserController userController = Get.find();
+    userController.logoutInProgress = true;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginLogoutIntermediatePage()),
+          (route) => false,
+    );
   }
 }
