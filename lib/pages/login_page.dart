@@ -47,11 +47,14 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  SizedBox(
-                    width: double.maxFinite,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: const Text("Login with Facebook"),
+                  Visibility(
+                    visible: false,
+                    child: SizedBox(
+                      width: double.maxFinite,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        child: const Text("Login with Facebook"),
+                      ),
                     ),
                   ),
                 ],
