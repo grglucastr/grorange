@@ -5,9 +5,9 @@ class Loading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Column(
-        children: const [
+        children: [
           CircularProgressIndicator(),
           SizedBox(height: 30),
           Text('Loading...'),

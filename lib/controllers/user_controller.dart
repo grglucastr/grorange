@@ -5,6 +5,8 @@ class UserController extends GetxController {
 
   User? _user;
   bool _userSignedIn = false;
+  bool _loginInProgress = false;
+  bool _logoutInProgress = false;
 
   User get user => _user!;
   set user(User value) {
@@ -16,6 +18,20 @@ class UserController extends GetxController {
 
   set userSignedIn(bool value) {
     _userSignedIn = value;
+    update();
+  }
+
+  bool get loginInProgress => _loginInProgress;
+
+  set loginInProgress(bool value) {
+    _loginInProgress = value;
+    update();
+  }
+
+  bool get logoutInProgress => _logoutInProgress;
+
+  set logoutInProgress(bool value) {
+    _logoutInProgress = value;
     update();
   }
 }
