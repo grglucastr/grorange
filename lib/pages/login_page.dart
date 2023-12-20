@@ -10,11 +10,19 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Container(
-              child: const Column(
+        child: Container(
+          width: double.maxFinite,
+          decoration: const BoxDecoration(
+            image:  DecorationImage(
+              image: AssetImage("images/pantry.jpg"),
+              opacity: 0.2,
+              fit: BoxFit.fill,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -32,35 +40,35 @@ class LoginPage extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              width: 190,
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: double.maxFinite,
-                    child: ElevatedButton(
-                      onPressed: () => _redirectToPleaseWait(context),
-                      child: const Text("Login with Google"),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Visibility(
-                    visible: false,
-                    child: SizedBox(
+              SizedBox(
+                width: 190,
+                child: Column(
+                  children: [
+                    SizedBox(
                       width: double.maxFinite,
                       child: ElevatedButton(
-                        onPressed: () {},
-                        child: const Text("Login with Facebook"),
+                        onPressed: () => _redirectToPleaseWait(context),
+                        child: const Text("Login with Google"),
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Visibility(
+                      visible: false,
+                      child: SizedBox(
+                        width: double.maxFinite,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          child: const Text("Login with Facebook"),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -71,7 +79,8 @@ class LoginPage extends StatelessWidget {
     userController.loginInProgress = true;
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const LoginLogoutIntermediatePage()),
+      MaterialPageRoute(
+          builder: (context) => const LoginLogoutIntermediatePage()),
       (route) => false,
     );
   }
