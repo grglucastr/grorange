@@ -4,6 +4,7 @@ import 'package:grorange/models/user.dart';
 class UserController extends GetxController {
 
   User? _user;
+  String _name = "";
   bool _userSignedIn = false;
   bool _loginInProgress = false;
   bool _logoutInProgress = false;
@@ -32,6 +33,15 @@ class UserController extends GetxController {
 
   set logoutInProgress(bool value) {
     _logoutInProgress = value;
+    update();
+  }
+
+  String get name => _name;
+
+  set name(String value) {
+    User usr = _user!;
+    _name = value;
+    user = User(usr.id, name, usr.insertDateTime, usr.updateDateTime);
     update();
   }
 }

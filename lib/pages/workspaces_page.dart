@@ -22,19 +22,16 @@ class WorkspacesPage extends StatefulWidget {
 }
 
 class _WorkspacesPageState extends State<WorkspacesPage> {
-
   WorkspaceController workspaceController = Get.find();
   AppBarController appBarController = Get.find();
   UserController userController = Get.find();
 
-
   @override
   Widget build(BuildContext context) {
     var dao = WorkspaceDAO();
-
     return Scaffold(
         appBar: PageAppBar(
-          title: 'Welcome, ${userController.user.name}',
+          title: 'Welcome, ${appBarController.title.value}',
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {

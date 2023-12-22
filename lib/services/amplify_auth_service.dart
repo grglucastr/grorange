@@ -54,7 +54,8 @@ class AmplifyAuthService {
   void _handleCodeDelivery(AuthCodeDeliveryDetails codeDeliveryDetails) {
     safePrint(
       'A confirmation code has been sent to ${codeDeliveryDetails.destination}'
-      'Please check your ${codeDeliveryDetails.deliveryMedium.name} for the code.',
+          'Please check your ${codeDeliveryDetails.deliveryMedium
+          .name} for the code.',
     );
   }
 
@@ -92,20 +93,27 @@ class AmplifyAuthService {
     if (result.nextStep.signInStep == AuthSignInStep.done) {
       safePrint('Sign in is complete');
 
-      const DateTime? dateTime = null;
-
       if (result.isSignedIn) {
         userController.userSignedIn = true;
         AuthUser authUser = await getCurrentUser();
+
+        const DateTime? dateTime = null;
         userController.user = User(
           authUser.userId,
-          authUser.username,
+          "",
           dateTime,
           dateTime,
         );
+
+        List<AuthUserAttribute>? attrs = await fetchCurrentUserAttributes();
+        final AuthUserAttribute nameAttr = attrs!.firstWhere((attr) => _findNameAttribute(attr));
+        final String fullName = nameAttr.value;
+        userController.name = fullName;
       }
     }
   }
+
+  bool _findNameAttribute(AuthUserAttribute attr) => attr.userAttributeKey.key.toLowerCase().compareTo("name") == 0;
 
   Future<SignInResult?> socialSignIn() async {
     try {
@@ -140,5 +148,15 @@ class AmplifyAuthService {
     if (result.signedOutLocally) {
       userController.userSignedIn = false;
     }
+  }
+
+  Future<List<AuthUserAttribute>?> fetchCurrentUserAttributes() async {
+    try {
+      final result = await Amplify.Auth.fetchUserAttributes();
+      return result;
+    } on AuthException catch (e){
+      safePrint('Error fetching user attributes: ${e.message}');
+    }
+    return null;
   }
 }

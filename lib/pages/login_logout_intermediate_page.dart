@@ -29,7 +29,7 @@ class _LoginLogoutIntermediatePageState
     }
   }
 
-  void _doSignIn(UserController controller) {
+  void _doSignIn(UserController controller) async {
     AmplifyAuthService authService = AmplifyAuthService();
     authService.socialSignIn().then((result) {
       if (result != null && result.isSignedIn) {
