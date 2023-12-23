@@ -1,16 +1,23 @@
 # grorange
 
-A new Flutter project.
+_grocery + arrange_
 
-## Getting Started
+🟠 Grorange is an app to help people arrange their groceries and generate grocery shop list.
+Developed in Flutter🐦 with ❤️.
 
-This project is a starting point for a Flutter application.
+## Features
+We're still in development phase, so there will be lot of features being released soon.
+For now, you can manage:
+ - Workspaces
+ - Slots
+ - Items
 
-A few resources to get you started if this is your first Flutter project:
+## Contribute: Getting Started
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### AWS Amplify CLI
+This project authentication and data storage are managed by AWS Amplify.
+To run this project locally, you will have to download and install the [AWS Amplify CLI](https://docs.amplify.aws/javascript/tools/cli/start/set-up-cli/).
+Follow the instructions described in the documentation and configure your AWS Account as well.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+### Soon more infos
