@@ -104,16 +104,9 @@ class AmplifyAuthService {
           dateTime,
           dateTime,
         );
-
-        final List<AuthUserAttribute>? attrs = await fetchCurrentUserAttributes();
-        final AuthUserAttribute nameAttr = attrs!.firstWhere((attr) => _findNameAttribute(attr));
-        final String fullName = nameAttr.value;
-        userController.name = fullName;
       }
     }
   }
-
-  bool _findNameAttribute(AuthUserAttribute attr) => attr.userAttributeKey.key.toLowerCase().compareTo("name") == 0;
 
   Future<SignInResult?> socialSignIn() async {
     try {
@@ -147,7 +140,7 @@ class AmplifyAuthService {
     result as CognitoSignOutResult;
     if (result.signedOutLocally) {
       userController.userSignedIn = false;
-      userController.user = Null as User;
+      userController.user = null;
     }
   }
 

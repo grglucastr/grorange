@@ -30,7 +30,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
   Widget build(BuildContext context) {
     var dao = WorkspaceDAO();
 
-    _setAppBarTitle();
+    appBarController.title.value = "Welcome, ${userController.firstName}";
 
     return Scaffold(
         appBar: PageAppBarWithActions(actions: []),
@@ -66,19 +66,8 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
         ));
   }
 
-  void _setAppBarTitle() {
-    if (userController.firstName.isEmpty) {
-      Future.delayed(const Duration(milliseconds: 1500)).then((value) {
-        appBarController.title.value = "Welcome, ${userController.firstName}";
-      });
-    } else {
-      appBarController.title.value = "Welcome, ${userController.firstName}";
-    }
-  }
-  
-  
 
-  Future<Null> _redirectAddWorkspace(BuildContext context) {
+  Future<void> _redirectAddWorkspace(BuildContext context) {
     return Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => const AddWorkspacePage(),
     )).then((value) {
