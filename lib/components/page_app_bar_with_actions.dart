@@ -4,14 +4,12 @@ import 'package:grorange/controllers/app_bar_controller.dart';
 
 class PageAppBarWithActions extends StatefulWidget
     implements PreferredSizeWidget {
-  final String title;
   final List<IconButton> actions;
 
   Function? leadButtonAction;
   bool showLeadingButton;
 
   PageAppBarWithActions({
-    required this.title,
     required this.actions,
     this.leadButtonAction,
     this.showLeadingButton = false,

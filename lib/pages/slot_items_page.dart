@@ -36,7 +36,6 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PageAppBarWithActions(
-        title: slotController.slot.name!,
         actions: [
           IconButton(
             onPressed: () => _showEditDialog(),

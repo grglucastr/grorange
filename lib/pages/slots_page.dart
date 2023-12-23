@@ -38,7 +38,6 @@ class _SlotsPageState extends State<SlotsPage> {
     var dao = SlotDAO();
     return Scaffold(
       appBar: PageAppBarWithActions(
-        title: Get.find<WorkspaceController>().workspace.name!,
         actions: [
           IconButton(
             onPressed: () => _showEditDialog(),
