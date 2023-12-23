@@ -4,7 +4,7 @@ import 'package:grorange/components/grid_button.dart';
 import 'package:grorange/components/grid_empty.dart';
 import 'package:grorange/components/grid_options.dart';
 import 'package:grorange/components/loading.dart';
-import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/components/page_app_bar_with_actions.dart';
 import 'package:grorange/components/page_title.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/user_controller.dart';
@@ -29,18 +29,13 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
   @override
   Widget build(BuildContext context) {
     var dao = WorkspaceDAO();
+
+    _setAppBarTitle();
+
     return Scaffold(
-        appBar: PageAppBar(
-          title: 'Welcome, ${appBarController.title.value}',
-        ),
+        appBar: PageAppBarWithActions(actions: []),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(
-                  builder: (context) => const AddWorkspacePage(),
-                ))
-                .then((value) => setState(() {}));
-          },
+          onPressed: () => _redirectAddWorkspace(context),
           child: const Icon(Icons.add),
         ),
         body: Column(
@@ -71,6 +66,27 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
         ));
   }
 
+  void _setAppBarTitle() {
+    if (userController.firstName.isEmpty) {
+      Future.delayed(const Duration(milliseconds: 1500)).then((value) {
+        appBarController.title.value = "Welcome, ${userController.firstName}";
+      });
+    } else {
+      appBarController.title.value = "Welcome, ${userController.firstName}";
+    }
+  }
+  
+  
+
+  Future<Null> _redirectAddWorkspace(BuildContext context) {
+    return Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const AddWorkspacePage(),
+    )).then((value) {
+        appBarController.title.value = "Welcome, ${userController.firstName}";
+        setState(() {});
+    });
+  }
+
   Widget _handleFutureBuilderDone(
       BuildContext context, AsyncSnapshot<List<Workspace>> snapshot) {
     if (snapshot.hasData) {
@@ -93,17 +109,19 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
         onTap: () {
           workspaceController.workspace = workspace;
           appBarController.title.value = workspace.name!;
-
-          Navigator.of(context)
-              .push(
-                MaterialPageRoute(
-                  builder: (context) => const SlotsPage(),
-                ),
-              )
-              .then((value) => setState(() {}));
+          _redirectToSlots();
         },
       ));
     }
     return GridOptions(buttons: buttons);
+  }
+
+  Future<void> _redirectToSlots() {
+    return Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const SlotsPage()),
+    ).then((value) {
+        appBarController.title.value = "Welcome, ${userController.firstName}";
+        setState(() {});
+    });
   }
 }
