@@ -10,7 +10,7 @@ class UserController extends GetxController {
   bool _logoutInProgress = false;
 
   User get user => _user!;
-  set user(User value) {
+  set user(User? value) {
     _user = value;
     update();
   }
