@@ -1,3 +1,5 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/components/loading.dart';
@@ -31,15 +33,13 @@ class _LoginLogoutIntermediatePageState
 
   void _doSignIn(UserController controller) async {
     AmplifyAuthService authService = AmplifyAuthService();
-    authService.socialSignIn().then((result) {
-      if (result != null && result.isSignedIn) {
-        controller.loginInProgress = false;
-
-        if (context.mounted) {
-          _redirectToHome(context);
-        }
+    final SignInResult? result = await authService.socialSignIn();
+    if (result != null && result.isSignedIn) {
+      controller.loginInProgress = false;
+      if (context.mounted) {
+        _redirectToHome(context);
       }
-    });
+    }
   }
 
   void _doSignOut(UserController controller) {
