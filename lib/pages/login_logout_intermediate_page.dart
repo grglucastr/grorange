@@ -3,6 +3,7 @@ import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/components/loading.dart';
+import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/pages/home_page.dart';
 import 'package:grorange/pages/login_page.dart';
@@ -36,7 +37,15 @@ class _LoginLogoutIntermediatePageState
     final SignInResult? result = await authService.socialSignIn();
     if (result != null && result.isSignedIn) {
       controller.loginInProgress = false;
+
+      final List<AuthUserAttribute>? attrs = await authService.fetchCurrentUserAttributes();
+      final AuthUserAttribute nameAttr = attrs!.firstWhere((attr) => _findNameAttribute(attr));
+      final String fullName = nameAttr.value;
+      controller.name = fullName;
+
       if (context.mounted) {
+        AppBarController appBarController = Get.find();
+        appBarController.title.value = "Welcome, ${controller.firstName}";
         _redirectToHome(context);
       }
     }
@@ -79,4 +88,6 @@ class _LoginLogoutIntermediatePageState
       (route) => false,
     );
   }
+
+  bool _findNameAttribute(AuthUserAttribute attr) => attr.userAttributeKey.key.toLowerCase().compareTo("name") == 0;
 }
