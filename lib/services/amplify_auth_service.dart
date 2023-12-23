@@ -105,7 +105,7 @@ class AmplifyAuthService {
           dateTime,
         );
 
-        List<AuthUserAttribute>? attrs = await fetchCurrentUserAttributes();
+        final List<AuthUserAttribute>? attrs = await fetchCurrentUserAttributes();
         final AuthUserAttribute nameAttr = attrs!.firstWhere((attr) => _findNameAttribute(attr));
         final String fullName = nameAttr.value;
         userController.name = fullName;
@@ -147,6 +147,7 @@ class AmplifyAuthService {
     result as CognitoSignOutResult;
     if (result.signedOutLocally) {
       userController.userSignedIn = false;
+      userController.user = Null as User;
     }
   }
 
