@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-grorangeapp-dev-234703-authRole",
+      "UnauthRoleArn": "arn:aws:iam::947434607925:role/amplify-grorangeapp-dev-234703-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::947434607925:role/amplify-grorangeapp-dev-234703-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-grorangeapp-dev-234703-deployment",
+      "UnauthRoleName": "amplify-grorangeapp-dev-234703-unauthRole",
+      "StackName": "amplify-grorangeapp-dev-234703",
+      "StackId": "arn:aws:cloudformation:us-east-1:947434607925:stack/amplify-grorangeapp-dev-234703/64819b10-a074-11ee-a969-127eea416609",
+      "AmplifyAppId": "d2w2mutfsazkw9"
+    },
+    "categories": {
+      "auth": {
+        "grorangeappf7c45919": {}
+      }
+    }
+  }
+}
