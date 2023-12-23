@@ -41,7 +41,14 @@ class UserController extends GetxController {
   set name(String value) {
     User usr = _user!;
     _name = value;
-    user = User(usr.id, name, usr.insertDateTime, usr.updateDateTime);
+    _user = User(usr.id, _name, usr.insertDateTime, usr.updateDateTime);
     update();
+  }
+
+  String get firstName {
+    if(_name.isEmpty){
+      return "";
+    }
+    return _name.split(" ")[0];
   }
 }
