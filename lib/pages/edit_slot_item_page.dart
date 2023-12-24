@@ -7,7 +7,6 @@ import 'package:grorange/database/dao/item_dao.dart';
 import 'package:grorange/models/enums/item_consumption_level.dart';
 import 'package:grorange/models/item.dart';
 import 'package:grorange/models/slot.dart';
-import 'package:uuid/uuid.dart';
 
 class EditSlotItemPage extends StatefulWidget {
   const EditSlotItemPage({super.key});
@@ -17,90 +16,97 @@ class EditSlotItemPage extends StatefulWidget {
 }
 
 class _EditSlotItemPageState extends State<EditSlotItemPage> {
-
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final SlotController slotController = Get.find();
   final ItemController itemController = Get.find();
   double consumption = .5;
 
+
+  @override
+  void initState() {
+    _itemNameController.text = itemController.item.name;
+    _quantityController.text = itemController.item.quantity.toString();
+    consumption = itemController.item.usagePercentage;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PageAppBarWithActions(actions: [],),
-      body:  Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 5.0, bottom: 10),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Item name',
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ),
-                TextField(
-                  controller: _itemNameController,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                      hintText: 'Milk',
-                      border: _buildOutlineInputBorder(),
-                      focusedBorder: _buildOutlineInputBorder()),
-                ),
-                const SizedBox(height: 20),
-                const Padding(
-                  padding: EdgeInsets.only(left: 5.0, bottom: 10),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Quantity',
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ),
-                TextField(
-                  controller: _quantityController,
-                  decoration: InputDecoration(
-                      hintText: '0',
-                      border: _buildOutlineInputBorder(),
-                      focusedBorder: _buildOutlineInputBorder()),
-                  keyboardType: TextInputType.number,
-                ),
-                const SizedBox(height: 20),
-                const Align(
+      appBar: PageAppBarWithActions(
+        actions: [],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(left: 5.0, bottom: 10),
+                child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Overall percentage consumption',
+                    'Item name',
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ),
-                Slider(
-                    value: consumption,
-                    onChanged: (newVal) {
-                      setState(() {
-                        consumption = newVal;
-                      });
-                    }),
-                const SizedBox(height: 50),
-                SizedBox(
-                  width: double.maxFinite,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _save();
-                      _itemNameController.text = '';
-                      _quantityController.text = '';
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Save'),
+              ),
+              TextField(
+                controller: _itemNameController,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                    hintText: 'Milk',
+                    border: _buildOutlineInputBorder(),
+                    focusedBorder: _buildOutlineInputBorder()),
+              ),
+              const SizedBox(height: 20),
+              const Padding(
+                padding: EdgeInsets.only(left: 5.0, bottom: 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Quantity',
+                    style: TextStyle(fontWeight: FontWeight.w500),
                   ),
-                )
-              ],
-            ),
+                ),
+              ),
+              TextField(
+                controller: _quantityController,
+                decoration: InputDecoration(
+                    hintText: '0',
+                    border: _buildOutlineInputBorder(),
+                    focusedBorder: _buildOutlineInputBorder()),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 20),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Overall percentage consumption',
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+              ),
+              Slider(
+                  value: consumption,
+                  onChanged: (newVal) {
+                    setState(() {
+                      consumption = newVal;
+                    });
+                  }),
+              const SizedBox(height: 50),
+              SizedBox(
+                width: double.maxFinite,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _save();
+                    _itemNameController.text = '';
+                    _quantityController.text = '';
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Save'),
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -118,7 +124,7 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
     final Slot slot = slotController.slot;
     final Item item = itemController.item;
 
-    final Item updatedItem = Item(
+    final Item itemToUpdate = Item(
       item.id,
       _itemNameController.text,
       int.parse(_quantityController.text),
@@ -132,7 +138,7 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
     );
 
     var dao = ItemDAO();
-    await dao.save(updatedItem);
+    await dao.update(itemToUpdate);
   }
 
   ItemConsumptionLevel _getLevel(double consumption) {

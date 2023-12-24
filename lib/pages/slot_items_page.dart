@@ -163,6 +163,8 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
       subtitle: Text(item.consumptionLevel.text),
       onTap: (){
         appBarController.title.value = 'Edit ${item.name}';
+        itemController.item = item;
+
         Navigator
             .push(context, MaterialPageRoute(builder: (context) => const EditSlotItemPage()))
             .then((value){
