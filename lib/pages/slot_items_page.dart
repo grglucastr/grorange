@@ -13,6 +13,7 @@ import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/models/item.dart';
 import 'package:grorange/models/slot.dart';
 import 'package:grorange/pages/add_slot_item_page.dart';
+import 'package:grorange/pages/edit_slot_item_page.dart';
 import 'package:grorange/pages/slots_page.dart';
 
 class SlotItemsPage extends StatefulWidget {
@@ -160,6 +161,15 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
     return ListTile(
       title: Text(item.name),
       subtitle: Text(item.consumptionLevel.text),
+      onTap: (){
+        appBarController.title.value = 'Edit ${item.name}';
+        Navigator
+            .push(context, MaterialPageRoute(builder: (context) => const EditSlotItemPage()))
+            .then((value){
+              appBarController.title.value = slotController.slot.name!;
+              setState(() {});
+            });
+      },
     );
   }
 
