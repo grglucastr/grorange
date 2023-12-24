@@ -55,4 +55,14 @@ class ItemDAO {
     final Database db = await getDatabase();
     return db.delete(_tableName, where: 'id=?', whereArgs: [itemID]);
   }
+
+  Future<int> update(Item item) async {
+    final Database db = await getDatabase();
+    return await db.update(
+      _tableName,
+      item.toMap(),
+      where: '$_id=?',
+      whereArgs: [item.id],
+    );
+  }
 }
