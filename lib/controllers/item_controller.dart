@@ -6,7 +6,7 @@ class ItemController extends GetxController {
 
   Item get item => _item;
 
-  set item(Item value) {
-    _item = value;
+  set item(Item? value) {
+    _item = value!;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grorange/components/dialog_delete_confirm.dart';
 import 'package:grorange/components/page_app_bar_with_actions.dart';
 import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/controllers/slot_controller.dart';
@@ -22,9 +23,9 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
   final ItemController itemController = Get.find();
   double consumption = .5;
 
-
   @override
   void initState() {
+    super.initState();
     _itemNameController.text = itemController.item.name;
     _quantityController.text = itemController.item.quantity.toString();
     consumption = itemController.item.usagePercentage;
@@ -32,9 +33,27 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
 
   @override
   Widget build(BuildContext context) {
+    var dao = ItemDAO();
+
     return Scaffold(
       appBar: PageAppBarWithActions(
-        actions: [],
+        actions: [
+          IconButton(
+            onPressed: () async {
+              bool? proceedDelete = await _showDeleteItemDialog();
+              if(proceedDelete!){
+                final int deleted = await dao.delete(itemController.item.id!);
+                if(deleted == 1){
+                  if(context.mounted){
+                    itemController.item = null;
+                    Navigator.pop(context);
+                  }
+                }
+              }
+            },
+            icon: const Icon(Icons.delete),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -155,5 +174,21 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
     }
 
     return ItemConsumptionLevel.critical;
+  }
+
+  Future<bool?> _showDeleteItemDialog() {
+    final ItemController itemController = Get.find();
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return DialogDeleteConfirm(
+          onConfirm: () {
+            Navigator.pop(context, true);
+          },
+          title: 'Delete Item',
+          description: 'Are you sure you want to remove this item ${itemController.item.name} from this slot?',
+        );
+      },
+    );
   }
 }
