@@ -9,6 +9,7 @@ import 'package:grorange/components/loading.dart';
 import 'package:grorange/components/page_app_bar_with_actions.dart';
 import 'package:grorange/components/page_title.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
+import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/controllers/slot_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
@@ -32,6 +33,7 @@ class _SlotsPageState extends State<SlotsPage> {
   final WorkspaceController workspaceController = Get.find();
   final SlotController slotController = Get.find();
   final AppBarController appBarController = Get.find();
+  final ItemController itemController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +112,7 @@ class _SlotsPageState extends State<SlotsPage> {
       buttons.add(GridButton(
         text: slot.name!,
         onTap: () {
+          itemController.clear();
           slotController.slot = slot;
           appBarController.title.value = slot.name!;
           Navigator.of(context).push(
