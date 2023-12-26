@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/components/dialog_delete_confirm.dart';
@@ -24,14 +26,30 @@ class SlotItemsPage extends StatefulWidget {
 }
 
 class _SlotItemsPageState extends State<SlotItemsPage> {
-  final TextEditingController _searchItemsController = TextEditingController();
   final SlotController slotController = Get.find();
   final WorkspaceController workspaceController = Get.find();
   final ItemController itemController = Get.find();
   final AppBarController appBarController = Get.find();
 
+  Timer? _debounce;
+
   var dao = ItemDAO();
   var slotDAO = SlotDAO();
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    if (itemController.items.isEmpty) {
+      itemController.items = await dao.findAll(slotController.slot.id!);
+    }
+    itemController.filteredItems = itemController.items;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _debounce?.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,8 +95,9 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
                 bottom: 25,
               ),
               child: TextField(
-                controller: _searchItemsController,
-                onChanged: (newValue) {},
+                onChanged: (newValue) {
+                  _onSearchChanged(newValue);
+                },
                 decoration: InputDecoration(
                   hintText: 'Search items...',
                   border: _buildOutlineInputBorder(),
@@ -86,17 +105,23 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
                 ),
               ),
             ),
-            Expanded(
-              child: FutureBuilder<List<Item>>(
-                future: dao.findAll(slotController.slot.id!),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                    final List<Item> content = snapshot.data!;
-                    return _buildListView(content);
-                  }
-                  return const GridEmpty();
-                },
-              ),
+            GetBuilder<ItemController>(
+              builder: (_) {
+                return Visibility(
+                  visible: _.filteredItems.isNotEmpty,
+                  child: Expanded(
+                    child: _buildListView(_.filteredItems),
+                  ),
+                );
+              },
+            ),
+            GetBuilder<ItemController>(
+              builder: (_) {
+                return Visibility(
+                  visible: _.filteredItems.isEmpty,
+                  child: const GridEmpty(),
+                );
+              },
             ),
           ],
         ),
@@ -121,11 +146,11 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
     return Dismissible(
       key: UniqueKey(),
       confirmDismiss: _handleItemRemovalConfirmation,
-      onDismissed: (direction){
+      onDismissed: (direction) {
         dao.delete(item.id!);
+        itemController.remove(item);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('${item.name} removed')));
-        setState(() { });
       },
       background: Container(
         color: Colors.red,
@@ -144,45 +169,45 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
     );
   }
 
-  Future<bool?> _handleItemRemovalConfirmation(DismissDirection dismissDirection) async {
-      switch(dismissDirection){
-        case DismissDirection.endToStart:
-        case DismissDirection.startToEnd:
-          return await _showDeleteItemDialog();
-        case DismissDirection.vertical:
-        case DismissDirection.horizontal:
-        case DismissDirection.up:
-        case DismissDirection.down:
-        case DismissDirection.none:
-          return false;
-      }
+  Future<bool?> _handleItemRemovalConfirmation(
+      DismissDirection dismissDirection) async {
+    switch (dismissDirection) {
+      case DismissDirection.endToStart:
+      case DismissDirection.startToEnd:
+        return await _showDeleteItemDialog();
+      case DismissDirection.vertical:
+      case DismissDirection.horizontal:
+      case DismissDirection.up:
+      case DismissDirection.down:
+      case DismissDirection.none:
+        return false;
     }
+  }
 
   ListTile _renderListTile(Item item) {
     return ListTile(
       title: Text(item.name),
       subtitle: Text(item.consumptionLevel.text),
-      onTap: (){
+      onTap: () {
         appBarController.title.value = 'Edit ${item.name}';
         itemController.item = item;
 
-        Navigator
-            .push(context, MaterialPageRoute(builder: (context) => const EditSlotItemPage()))
-            .then((value){
-              appBarController.title.value = slotController.slot.name!;
-              if(value != null){
-                _showUpdatedSnackbar();
-              }
-              setState(() {});
-            });
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const EditSlotItemPage())).then((value) {
+          appBarController.title.value = slotController.slot.name!;
+          if (value != null) {
+            _showUpdatedSnackbar();
+          }
+        });
       },
     );
   }
 
   void _showUpdatedSnackbar() {
-     final String item = itemController.item.name;
-    ScaffoldMessenger
-        .of(context)
+    final String item = itemController.item.name;
+    ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text('$item updated')));
   }
 
@@ -237,7 +262,8 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
             Navigator.pop(context, true);
           },
           title: 'Delete Item',
-          description: 'Are you sure you want to remove this item ${itemController.item.name} from this slot?',
+          description:
+              'Are you sure you want to remove this item ${itemController.item.name} from this slot?',
         );
       },
     );
@@ -257,8 +283,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
           controller: titleController,
           onConfirm: () {
             slotDAO
-                .updateName(
-                slotController.slot.id!, titleController.text)
+                .updateName(slotController.slot.id!, titleController.text)
                 .then((value) {
               if (value == 1) {
                 Slot slot = slotController.slot;
@@ -273,5 +298,17 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
       },
     );
   }
-  
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (query.isEmpty) {
+        itemController.filteredItems = itemController.items;
+        return;
+      }
+      itemController.filteredItems = itemController.items
+          .where((it) => it.name.toLowerCase().contains(query.toLowerCase()))
+          .toList(growable: true);
+    });
+  }
 }

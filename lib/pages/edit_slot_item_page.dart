@@ -42,10 +42,11 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
             onPressed: () async {
               bool? proceedDelete = await _showDeleteItemDialog();
               if(proceedDelete!){
-                final int deleted = await dao.delete(itemController.item.id!);
+                final Item item  = itemController.item;
+                final int deleted = await dao.delete(item.id!);
                 if(deleted == 1){
                   if(context.mounted){
-                    itemController.item = null;
+                    itemController.remove(item);
                     Navigator.pop(context);
                   }
                 }
@@ -159,6 +160,7 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
 
     var dao = ItemDAO();
     await dao.update(itemToUpdate);
+    itemController.updateItem(itemToUpdate);
   }
 
   Future<bool?> _showDeleteItemDialog() {
