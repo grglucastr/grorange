@@ -120,7 +120,7 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
                     _save();
                     _itemNameController.text = '';
                     _quantityController.text = '';
-                    Navigator.pop(context);
+                    Navigator.pop(context, true);
                   },
                   child: const Text('Save'),
                 ),

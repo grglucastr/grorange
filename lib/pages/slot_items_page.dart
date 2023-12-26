@@ -170,10 +170,20 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
             .push(context, MaterialPageRoute(builder: (context) => const EditSlotItemPage()))
             .then((value){
               appBarController.title.value = slotController.slot.name!;
+              if(value != null){
+                _showUpdatedSnackbar();
+              }
               setState(() {});
             });
       },
     );
+  }
+
+  void _showUpdatedSnackbar() {
+     final String item = itemController.item.name;
+    ScaffoldMessenger
+        .of(context)
+        .showSnackBar(SnackBar(content: Text('$item updated')));
   }
 
   OutlineInputBorder _buildOutlineInputBorder() {
