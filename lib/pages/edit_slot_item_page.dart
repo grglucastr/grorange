@@ -112,6 +112,7 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
                       consumption = newVal;
                     });
                   }),
+              Text(ItemConsumptionLevel.getLevelFromPercentage(consumption).text),
               const SizedBox(height: 50),
               SizedBox(
                 width: double.maxFinite,
@@ -148,7 +149,7 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
       _itemNameController.text,
       int.parse(_quantityController.text),
       consumption,
-      _getLevel(consumption),
+      ItemConsumptionLevel.getLevelFromPercentage(consumption),
       slot.id!,
       slot.workspaceId,
       item.userId,
@@ -158,22 +159,6 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
 
     var dao = ItemDAO();
     await dao.update(itemToUpdate);
-  }
-
-  ItemConsumptionLevel _getLevel(double consumption) {
-    if (consumption >= .7) {
-      return ItemConsumptionLevel.safe;
-    }
-
-    if (consumption >= .4) {
-      return ItemConsumptionLevel.moderate;
-    }
-
-    if (consumption >= .39) {
-      return ItemConsumptionLevel.severe;
-    }
-
-    return ItemConsumptionLevel.critical;
   }
 
   Future<bool?> _showDeleteItemDialog() {
