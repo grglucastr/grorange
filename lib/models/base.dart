@@ -20,4 +20,12 @@ abstract class Base {
   String toString() {
     return 'Base{id: $id, active: $active, insertDateTime: $insertDateTime, updateDateTime: $updateDateTime}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Base && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

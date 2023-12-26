@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/database/dao/item_dao.dart';
 import 'package:grorange/models/enums/item_consumption_level.dart';
 import 'package:grorange/models/item.dart';
@@ -21,6 +23,8 @@ class AddSlotItemPage extends StatefulWidget {
 class _AddSlotItemPageState extends State<AddSlotItemPage> {
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
+  final ItemController itemController = Get.find();
+
   double consumption = .5;
 
   @override
@@ -132,5 +136,10 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
 
     var dao = ItemDAO();
     await dao.save(item);
+
+    final List<Item> items = itemController.items;
+    items.add(item);
+
+    itemController.items = items;
   }
 }
