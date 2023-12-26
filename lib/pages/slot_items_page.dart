@@ -125,6 +125,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
         dao.delete(item.id!);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('${item.name} removed')));
+        setState(() { });
       },
       background: Container(
         color: Colors.red,
