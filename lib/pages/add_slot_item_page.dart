@@ -86,6 +86,7 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
                       consumption = newVal;
                     });
                   }),
+              Text(ItemConsumptionLevel.getLevelFromPercentage(consumption).text),
               const SizedBox(height: 50),
               SizedBox(
                 width: double.maxFinite,
@@ -121,7 +122,7 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
       _itemNameController.text,
       int.parse(_quantityController.text),
       consumption,
-      _getLevel(consumption),
+      ItemConsumptionLevel.getLevelFromPercentage(consumption),
       widget.slot.id!,
       widget.slot.workspaceId,
       uuid.v4(),
@@ -131,21 +132,5 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
 
     var dao = ItemDAO();
     await dao.save(item);
-  }
-
-  ItemConsumptionLevel _getLevel(double consumption) {
-    if (consumption >= .7) {
-      return ItemConsumptionLevel.safe;
-    }
-
-    if (consumption >= .4) {
-      return ItemConsumptionLevel.moderate;
-    }
-
-    if (consumption >= .39) {
-      return ItemConsumptionLevel.severe;
-    }
-
-    return ItemConsumptionLevel.critical;
   }
 }
