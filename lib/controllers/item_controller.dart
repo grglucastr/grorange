@@ -48,4 +48,9 @@ class ItemController extends GetxController {
 
     safePrint(_items);
   }
+
+  void clear(){
+    _items = List.empty(growable: true);
+    _item = null;
+  }
 }
