@@ -28,10 +28,6 @@ class _SettingsPageState extends State<SettingsPage> {
   List<ListTile> getOptions(BuildContext context) {
     final List<ListTile> options = List.empty(growable: true);
 
-    ListTile changePassword = const ListTile(
-      title: Text('Change Password'),
-    );
-
     ListTile logout =  ListTile(
       title: const Text('Logout'),
       textColor: Colors.white,
@@ -39,7 +35,6 @@ class _SettingsPageState extends State<SettingsPage> {
       onTap: () => _redirectToPleaseWait(context),
     );
 
-    options.add(changePassword);
     options.add(logout);
     return options;
   }
