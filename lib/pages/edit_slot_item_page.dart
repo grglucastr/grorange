@@ -41,13 +41,21 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
           IconButton(
             onPressed: () async {
               bool? proceedDelete = await _showDeleteItemDialog();
-              if(proceedDelete!){
-                final Item item  = itemController.item;
+              if (proceedDelete!) {
+                final Item item = itemController.item;
                 final int deleted = await dao.delete(item.id!);
-                if(deleted == 1){
-                  if(context.mounted){
+                if (deleted == 1) {
+                  if (context.mounted) {
+                    Map<String, dynamic> feedback = {
+                      'action': 'delete',
+                      'successfully': true,
+                      'item_name': item.name,
+                    };
                     itemController.remove(item);
-                    Navigator.pop(context);
+                    Navigator.pop(
+                      context,
+                      feedback,
+                    );
                   }
                 }
               }
@@ -113,7 +121,8 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
                       consumption = newVal;
                     });
                   }),
-              Text(ItemConsumptionLevel.getLevelFromPercentage(consumption).text),
+              Text(ItemConsumptionLevel.getLevelFromPercentage(consumption)
+                  .text),
               const SizedBox(height: 50),
               SizedBox(
                 width: double.maxFinite,
@@ -122,7 +131,8 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
                     _save();
                     _itemNameController.text = '';
                     _quantityController.text = '';
-                    Navigator.pop(context, true);
+                    Navigator.pop(
+                        context, {'action': 'update', 'successfully': true});
                   },
                   child: const Text('Save'),
                 ),
@@ -173,7 +183,8 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
             Navigator.pop(context, true);
           },
           title: 'Delete Item',
-          description: 'Are you sure you want to remove this item ${itemController.item.name} from this slot?',
+          description:
+              'Are you sure you want to remove this item ${itemController.item.name} from this slot?',
         );
       },
     );

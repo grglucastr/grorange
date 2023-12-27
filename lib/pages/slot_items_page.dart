@@ -192,23 +192,37 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
         appBarController.title.value = 'Edit ${item.name}';
         itemController.item = item;
 
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const EditSlotItemPage())).then((value) {
-          appBarController.title.value = slotController.slot.name!;
-          if (value != null) {
-            _showUpdatedSnackbar();
-          }
-        });
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const EditSlotItemPage()))
+            .then((value) {
+              appBarController.title.value = slotController.slot.name!;
+              _handleFeedbackFromEditPage(value);
+          },
+        );
       },
     );
+  }
+
+  void _handleFeedbackFromEditPage(value) {
+    if (value != null) {
+      Map<String, dynamic> feedback = value;
+      if(feedback['action'] == 'update' && feedback['successfully']) {
+        _showUpdatedSnackbar();
+      }
+      if(feedback['action'] == 'delete' && feedback['successfully']) {
+        _showDeleteSnackbar(feedback['item_name']);
+      }
+    }
   }
 
   void _showUpdatedSnackbar() {
     final String item = itemController.item.name;
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text('$item updated')));
+  }
+
+  void _showDeleteSnackbar(String itemName) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('$itemName removed')));
   }
 
   OutlineInputBorder _buildOutlineInputBorder() {
