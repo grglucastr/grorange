@@ -22,15 +22,12 @@ class LoginPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Column(
+               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.amber,
-                    maxRadius: 60,
-                  ),
-                  Text(
+                  Image.asset("images/app-logo.png"),
+                  const Text(
                     "Grorange",
                     style: TextStyle(
                       fontSize: 32,
@@ -38,6 +35,7 @@ class LoginPage extends StatelessWidget {
                       fontFamily: 'RobotoMono',
                     ),
                   ),
+                  const Text('Beta v0.0.1'),
                 ],
               ),
               SizedBox(

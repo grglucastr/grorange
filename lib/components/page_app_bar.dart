@@ -14,7 +14,7 @@ class PageAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(title),
-      backgroundColor: Colors.blue,
+      backgroundColor: const Color.fromARGB(255, 255, 152, 0),
       foregroundColor: Colors.white,
     );
   }

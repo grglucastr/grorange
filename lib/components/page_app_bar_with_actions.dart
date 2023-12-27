@@ -39,7 +39,7 @@ class _PageAppBarWithActionsState<T> extends State<PageAppBarWithActions> {
   AppBar _appBarNoLeadingButton() {
     return AppBar(
       title: Obx(() => Text(appBarController.title.value)),
-      backgroundColor: Colors.blue,
+      backgroundColor: const Color.fromARGB(255, 255, 152, 0),
       foregroundColor: Colors.white,
       actions: widget.actions,
     );
@@ -48,7 +48,7 @@ class _PageAppBarWithActionsState<T> extends State<PageAppBarWithActions> {
   AppBar _appBarLeadingButton() {
     return AppBar(
       title: Obx(() => Text(appBarController.title.value)),
-      backgroundColor: Colors.blue,
+      backgroundColor: const Color.fromARGB(255, 255, 152, 0),
       foregroundColor: Colors.white,
       actions: widget.actions,
       automaticallyImplyLeading: false,
