@@ -13,7 +13,7 @@ class LoginPage extends StatelessWidget {
         child: Container(
           width: double.maxFinite,
           decoration: const BoxDecoration(
-            image:  DecorationImage(
+            image: DecorationImage(
               image: AssetImage("images/pantry.jpg"),
               opacity: 0.2,
               fit: BoxFit.fill,
@@ -41,14 +41,31 @@ class LoginPage extends StatelessWidget {
                 ],
               ),
               SizedBox(
-                width: 190,
+                width: 310,
                 child: Column(
                   children: [
                     SizedBox(
                       width: double.maxFinite,
+                      height: 70,
                       child: ElevatedButton(
                         onPressed: () => _redirectToPleaseWait(context),
-                        child: const Text("Login with Google"),
+                        style: const ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll(Colors.orange)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Image.asset("images/icons8-google-50.png"),
+                            const Text(
+                              "Continue with Google",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(
