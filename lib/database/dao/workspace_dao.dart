@@ -46,13 +46,14 @@ class WorkspaceDAO {
 
   }
 
-  Future<List<Workspace>> findAll() async {
+  Future<List<Workspace>> findAllByUserId(String userId) async {
     final List<Workspace> workspaces = List.empty(growable: true);
 
     final Database db = await getDatabase();
-    final List<Map<String, dynamic>> rows = await db.query(tableName);
+    List<Map<String, dynamic>> rows = await db
+        .query(tableName, where: 'user_id = ?', whereArgs: [userId]);
 
-    for (var row in rows) {
+    for(Map<String, dynamic> row in rows){
       workspaces.add(Workspace.fromMap(row));
     }
     return workspaces;
