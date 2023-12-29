@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/database/dao/workspace_dao.dart';
 import 'package:grorange/models/workspace.dart';
 import 'package:uuid/uuid.dart';
@@ -71,13 +73,14 @@ class _AddWorkspacePageState extends State<AddWorkspacePage> {
 
   void _save() async {
     var uuid = const Uuid();
+    final UserController userController = Get.find();
 
     final Workspace workspace = Workspace(
       uuid.v4(),
       _workspaceNameController.text,
       DateTime.now(),
       null,
-      uuid.v4(),
+      userController.user.id,
     );
 
     var dao = WorkspaceDAO();

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/models/slot.dart';
 import 'package:grorange/models/workspace.dart';
@@ -70,13 +72,14 @@ class _AddSlotPageState extends State<AddSlotPage> {
 
   void _save() async {
     var dao = SlotDAO();
-
     var uuid = const Uuid();
+
+    final UserController userController = Get.find();
 
     final Slot slot = Slot(
       uuid.v4(),
       _slotNameController.text,
-      uuid.v4(),
+      userController.user.id!,
       widget.workspace.id!,
       DateTime.now(),
       null,

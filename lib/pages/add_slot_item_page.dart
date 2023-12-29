@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/controllers/item_controller.dart';
+import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/database/dao/item_dao.dart';
 import 'package:grorange/models/enums/item_consumption_level.dart';
 import 'package:grorange/models/item.dart';
@@ -120,6 +121,7 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
 
   void _save() async {
     var uuid = const Uuid();
+    final UserController userController = Get.find();
 
     final Item item = Item(
       uuid.v4(),
@@ -129,7 +131,7 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
       ItemConsumptionLevel.getLevelFromPercentage(consumption),
       widget.slot.id!,
       widget.slot.workspaceId,
-      uuid.v4(),
+      userController.user.id!,
       DateTime.now(),
       null,
     );
