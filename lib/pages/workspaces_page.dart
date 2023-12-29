@@ -31,6 +31,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
     var dao = WorkspaceDAO();
 
     appBarController.title.value = "Welcome, ${userController.firstName}";
+    final String userId = userController.user.id!;
 
     return Scaffold(
         appBar: PageAppBarWithActions(actions: []),
@@ -48,7 +49,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
               height: 60,
             ),
             FutureBuilder<List<Workspace>>(
-                future: dao.findAll(),
+                future: dao.findAllByUserId(userId),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.none:
