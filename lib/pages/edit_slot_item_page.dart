@@ -52,10 +52,7 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
                       'item_name': item.name,
                     };
                     itemController.remove(item);
-                    Navigator.pop(
-                      context,
-                      feedback,
-                    );
+                    Navigator.pop(context, feedback);
                   }
                 }
               }
