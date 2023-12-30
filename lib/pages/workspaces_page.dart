@@ -1,9 +1,9 @@
+import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/components/grid_button.dart';
 import 'package:grorange/components/grid_empty.dart';
 import 'package:grorange/components/grid_options.dart';
-import 'package:grorange/components/loading.dart';
 import 'package:grorange/components/page_app_bar_with_actions.dart';
 import 'package:grorange/components/page_title.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
@@ -22,96 +22,70 @@ class WorkspacesPage extends StatefulWidget {
 }
 
 class _WorkspacesPageState extends State<WorkspacesPage> {
-  WorkspaceController workspaceController = Get.find();
-  AppBarController appBarController = Get.find();
-  UserController userController = Get.find();
+  final UserController userController = Get.find();
+  final WorkspaceController workspaceController = Get.find();
+  final AppBarController appBarController = Get.find();
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    final WorkspaceDAO wkDAO = WorkspaceDAO();
+    workspaceController.workspaces = await wkDAO
+        .findAllByUserId(userController.user.id!);
+    _setAppBar();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var dao = WorkspaceDAO();
-
-    appBarController.title.value = "Welcome, ${userController.firstName}";
-    final String userId = userController.user.id!;
-
     return Scaffold(
-        appBar: PageAppBarWithActions(actions: []),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _redirectAddWorkspace(context),
-          child: const Icon(Icons.add),
-        ),
-        body: Column(
-          children: [
-            const SizedBox(
-              height: 40,
-            ),
-            const PageTitle(title: 'Workspaces'),
-            const SizedBox(
-              height: 60,
-            ),
-            FutureBuilder<List<Workspace>>(
-                future: dao.findAllByUserId(userId),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                      break;
-                    case ConnectionState.waiting:
-                      return const Loading();
-                    case ConnectionState.active:
-                      break;
-                    case ConnectionState.done:
-                      return _handleFutureBuilderDone(context, snapshot);
-                  }
-                  return const Text('data error');
-                }),
-          ],
-        ));
-  }
-
-
-  Future<void> _redirectAddWorkspace(BuildContext context) {
-    return Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const AddWorkspacePage(),
-    )).then((value) {
-        appBarController.title.value = "Welcome, ${userController.firstName}";
-        setState(() {});
-    });
-  }
-
-  Widget _handleFutureBuilderDone(
-      BuildContext context, AsyncSnapshot<List<Workspace>> snapshot) {
-    if (snapshot.hasData) {
-      List<Workspace> workspaces = snapshot.data!;
-      return workspaces.isNotEmpty
-          ? _fillGrid(workspaces)
-          : const GridEmpty(text: 'No workspaces found...');
-    }
-    return const Center(
-      child: Text('Still loading...'),
+      appBar: PageAppBarWithActions(actions: []),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _redirectAddWorkspace(),
+        child: const Icon(Icons.add),
+      ),
+      body: Column(
+        children: [
+          const SizedBox(height: 40),
+          const PageTitle(title: 'Workspaces'),
+          const SizedBox(height: 60),
+          GetBuilder<WorkspaceController>(
+              builder: (_) => _renderGrid(_.workspaces)),
+        ],
+      ),
     );
   }
 
-  Widget _fillGrid(List<Workspace> workspaces) {
-    List<GridButton> buttons = List.empty(growable: true);
+  Widget _renderGrid(List<Workspace> workspaces) {
+    if (workspaces.isEmpty) {
+      return const GridEmpty(text: 'No workspaces found...');
+    }
 
+    List<GridButton> buttons = List.empty(growable: true);
     for (var workspace in workspaces) {
       buttons.add(GridButton(
         text: workspace.name!,
         onTap: () {
           workspaceController.workspace = workspace;
-          appBarController.title.value = workspace.name!;
+          appBarController.titleText = workspace.name!;
           _redirectToSlots();
         },
       ));
     }
+
     return GridOptions(buttons: buttons);
   }
 
   Future<void> _redirectToSlots() {
-    return Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const SlotsPage()),
-    ).then((value) {
-        appBarController.title.value = "Welcome, ${userController.firstName}";
-        setState(() {});
-    });
+    var page = MaterialPageRoute(builder: (ctx) => const SlotsPage());
+    return Navigator.of(context).push(page).then((v) => _setAppBar());
+  }
+
+  Future<void> _redirectAddWorkspace() {
+    var page = MaterialPageRoute(builder: (ctx) => const AddWorkspacePage());
+    return Navigator.of(context).push(page).then((v) => _setAppBar());
+  }
+
+  void _setAppBar(){
+    appBarController.titleText = "Welcome, ${userController.firstName}";
   }
 }
