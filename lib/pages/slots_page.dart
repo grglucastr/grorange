@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/components/dialog_delete_confirm.dart';
 import 'package:grorange/components/dialog_edit_names.dart';
+import 'package:grorange/components/grid_button.dart';
+import 'package:grorange/components/grid_empty.dart';
+import 'package:grorange/components/grid_options.dart';
 import 'package:grorange/components/page_app_bar_with_actions.dart';
 import 'package:grorange/components/page_title.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
@@ -11,8 +14,10 @@ import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/database/dao/workspace_dao.dart';
+import 'package:grorange/models/slot.dart';
 import 'package:grorange/models/workspace.dart';
 import 'package:grorange/pages/home_page.dart';
+import 'package:grorange/pages/slot_items_page.dart';
 
 class SlotsPage extends StatefulWidget {
   const SlotsPage({super.key});
@@ -30,30 +35,39 @@ class _SlotsPageState extends State<SlotsPage> {
   final ItemController itemController = Get.find();
   final UserController userController = Get.find();
 
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    slotController.slots = await dao
+        .findAll(workspaceController.workspace.id!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PageAppBarWithActions(
-        actions: [
-          IconButton(
-            onPressed: () => _showEditDialog(),
-            icon: const Icon(Icons.edit),
-          ),
-          IconButton(
-            onPressed: () => _showDeleteDialog(),
-            icon: const Icon(Icons.delete),
-          ),
-        ]
-      ),
+      appBar: PageAppBarWithActions(actions: [
+        IconButton(
+          onPressed: () => _showEditDialog(),
+          icon: const Icon(Icons.edit),
+        ),
+        IconButton(
+          onPressed: () => _showDeleteDialog(),
+          icon: const Icon(Icons.delete),
+        ),
+      ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: const Icon(Icons.add),
       ),
-      body: const Column(
+      body: Column(
         children: [
-          SizedBox(height: 40),
-          PageTitle(title: 'Slots'),
-          SizedBox(height: 60),
+          const SizedBox(height: 40),
+          const PageTitle(title: 'Slots'),
+          const SizedBox(height: 60),
+          GetBuilder<SlotController>(builder: (_) {
+            return _renderGrid(_.slots);
+          }),
         ],
       ),
     );
@@ -73,9 +87,38 @@ class _SlotsPageState extends State<SlotsPage> {
     );
   }
 
+  Widget _renderGrid(List<Slot> slots) {
+
+    if(slots.isEmpty){
+      return const GridEmpty(text: 'No slots found...');
+    }
+
+    final List<GridButton> buttons = List.empty(growable: true);
+    for (var slot in slots) {
+      buttons.add(GridButton(
+        text: slot.name!,
+        onTap: () {
+          itemController.clear();
+          slotController.slot = slot;
+          appBarController.titleText = slot.name!;
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const SlotItemsPage(),
+            ),
+          ).then((value) {
+            appBarController.titleText = workspaceController.workspace.name!;
+          });
+        },
+      ));
+    }
+
+    return GridOptions(buttons: buttons);
+  }
+
+
   void _performDelete() async {
     await workspaceDAO.delete(workspaceController.workspace.id!);
-    if(context.mounted) {
+    if (context.mounted) {
       appBarController.titleText = "Welcome, ${userController.firstName}";
       var page = MaterialPageRoute(builder: (ctx) => const Home());
       Navigator.pushAndRemoveUntil(context, page, (route) => false);
@@ -95,7 +138,7 @@ class _SlotsPageState extends State<SlotsPage> {
           onConfirm: () {
             workspaceDAO
                 .updateName(
-                workspaceController.workspace.id!, titleController.text)
+                    workspaceController.workspace.id!, titleController.text)
                 .then((value) {
               if (value == 1) {
                 Workspace wk = workspaceController.workspace;
