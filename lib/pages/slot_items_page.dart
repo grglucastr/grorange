@@ -159,8 +159,8 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _removeText(),
-              _removeText(),
+              _removeText(), //left
+              _removeText(), //right
             ],
           ),
         ),
@@ -189,13 +189,16 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
       title: Text(item.name),
       subtitle: Text(item.consumptionLevel.text),
       onTap: () {
-        appBarController.title.value = 'Edit ${item.name}';
+        appBarController.titleText = 'Edit ${item.name}';
         itemController.item = item;
 
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const EditSlotItemPage()))
-            .then((value) {
-              appBarController.title.value = slotController.slot.name!;
-              _handleFeedbackFromEditPage(value);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const EditSlotItemPage())).then(
+          (value) {
+            appBarController.titleText = slotController.slot.name!;
+            _handleFeedbackFromEditPage(value);
           },
         );
       },
@@ -205,10 +208,10 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
   void _handleFeedbackFromEditPage(value) {
     if (value != null) {
       Map<String, dynamic> feedback = value;
-      if(feedback['action'] == 'update' && feedback['successfully']) {
+      if (feedback['action'] == 'update' && feedback['successfully']) {
         _showUpdatedSnackbar();
       }
-      if(feedback['action'] == 'delete' && feedback['successfully']) {
+      if (feedback['action'] == 'delete' && feedback['successfully']) {
         _showDeleteSnackbar(feedback['item_name']);
       }
     }
@@ -252,14 +255,11 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
               'Delete slot: ${slotController.slot.name}\n\nWARNING:\nAll items related to this slot will be lost. Are you sure you want to proceed?',
           onConfirm: () {
             slotDAO.delete(slotController.slot.id!);
+            slotController.delete(slotController.slot);
 
-            // TODO: fix this
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SlotsPage(),
-                ),
-                (route) => true);
+            appBarController.titleText = workspaceController.workspace.name!;
+            Navigator.pop(context); // dismiss dialog
+            Navigator.pop(context); // return slots page
           },
         );
       },
@@ -285,15 +285,13 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
 
   void _showEditDialog() {
     final TextEditingController titleController = TextEditingController();
-
-    debugPrint('value in controller: ${slotController.slot.toString()}');
     titleController.text = slotController.slot.name!;
 
     showDialog(
       context: context,
       builder: (context) {
         return DialogEditNames(
-          title: 'New workspace name',
+          title: 'New slot name',
           controller: titleController,
           onConfirm: () {
             slotDAO
@@ -303,7 +301,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
                 Slot slot = slotController.slot;
                 slot.name = titleController.text;
                 slotController.slot = slot;
-                appBarController.title.value = titleController.text;
+                appBarController.titleText = titleController.text;
               }
               Navigator.pop(context);
             });

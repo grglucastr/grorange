@@ -7,7 +7,7 @@ class SlotController extends GetxController {
   List<Slot> _slots = List.empty(growable: true);
 
   Slot get slot => _slot!;
-  set slot(Slot value) {
+  set slot(Slot? value) {
     _slot = value;
     update();
   }
@@ -23,4 +23,12 @@ class SlotController extends GetxController {
     slots.add(slot);
     this.slots = slots;
   }
+
+  void delete(Slot slot){
+    List<Slot> slots = this.slots.where((s) => s.id != slot.id)
+        .toList(growable: true);
+    this.slots = slots;
+    this.slot = null;
+  }
+
 }
