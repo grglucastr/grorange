@@ -1,4 +1,3 @@
-import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/components/grid_button.dart';
