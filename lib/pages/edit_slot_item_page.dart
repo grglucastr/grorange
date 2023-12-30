@@ -43,7 +43,7 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
               bool? proceedDelete = await _showDeleteItemDialog();
               if (proceedDelete!) {
                 final Item item = itemController.item;
-                final int deleted = await dao.delete(item.id!);
+                final int deleted = await dao.delete(item);
                 if (deleted == 1) {
                   if (context.mounted) {
                     Map<String, dynamic> feedback = {

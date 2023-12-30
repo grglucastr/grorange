@@ -39,7 +39,7 @@ class ItemDAO {
     final Database db = await getDatabase();
     final List<Map<String, dynamic>> result = await db.query(
       _tableName,
-      where: '$_slotId=?',
+      where: '$_slotId=? AND $_active = 1',
       whereArgs: [slotID],
     );
 
@@ -51,13 +51,17 @@ class ItemDAO {
     return items;
   }
 
-  Future<int> delete(String itemID) async {
+  Future<int> delete(Item item) async {
     final Database db = await getDatabase();
-    return db.delete(_tableName, where: 'id=?', whereArgs: [itemID]);
+    item.active = false;
+    item.updateDateTime = DateTime.now();
+    return db.update(_tableName, item.toMap(), where: '$_id=?', whereArgs: [item.id]);
   }
+
 
   Future<int> update(Item item) async {
     final Database db = await getDatabase();
+    item.updateDateTime = DateTime.now();
     return await db.update(
       _tableName,
       item.toMap(),

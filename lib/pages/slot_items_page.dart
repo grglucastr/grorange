@@ -147,7 +147,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
       key: UniqueKey(),
       confirmDismiss: _handleItemRemovalConfirmation,
       onDismissed: (direction) {
-        dao.delete(item.id!);
+        dao.delete(item);
         itemController.remove(item);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('${item.name} removed')));
