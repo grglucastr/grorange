@@ -17,4 +17,10 @@ class SlotController extends GetxController {
     _slots = value;
     update();
   }
+
+  void add(Slot slot){
+    List<Slot> slots = this.slots;
+    slots.add(slot);
+    this.slots = slots;
+  }
 }

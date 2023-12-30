@@ -16,6 +16,7 @@ import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/database/dao/workspace_dao.dart';
 import 'package:grorange/models/slot.dart';
 import 'package:grorange/models/workspace.dart';
+import 'package:grorange/pages/add_slot_page.dart';
 import 'package:grorange/pages/home_page.dart';
 import 'package:grorange/pages/slot_items_page.dart';
 
@@ -35,12 +36,10 @@ class _SlotsPageState extends State<SlotsPage> {
   final ItemController itemController = Get.find();
   final UserController userController = Get.find();
 
-
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    slotController.slots = await dao
-        .findAll(workspaceController.workspace.id!);
+    slotController.slots = await dao.findAll(workspaceController.workspace.id!);
   }
 
   @override
@@ -57,7 +56,7 @@ class _SlotsPageState extends State<SlotsPage> {
         ),
       ]),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => _redirectToAddSlotsPage(),
         child: const Icon(Icons.add),
       ),
       body: Column(
@@ -65,9 +64,7 @@ class _SlotsPageState extends State<SlotsPage> {
           const SizedBox(height: 40),
           const PageTitle(title: 'Slots'),
           const SizedBox(height: 60),
-          GetBuilder<SlotController>(builder: (_) {
-            return _renderGrid(_.slots);
-          }),
+          GetBuilder<SlotController>(builder: (_) => _renderGrid(_.slots)),
         ],
       ),
     );
@@ -88,8 +85,7 @@ class _SlotsPageState extends State<SlotsPage> {
   }
 
   Widget _renderGrid(List<Slot> slots) {
-
-    if(slots.isEmpty){
+    if (slots.isEmpty) {
       return const GridEmpty(text: 'No slots found...');
     }
 
@@ -101,11 +97,8 @@ class _SlotsPageState extends State<SlotsPage> {
           itemController.clear();
           slotController.slot = slot;
           appBarController.titleText = slot.name!;
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const SlotItemsPage(),
-            ),
-          ).then((value) {
+          var page = MaterialPageRoute(builder: (ctx) => const SlotItemsPage());
+          Navigator.of(context).push(page).then((value) {
             appBarController.titleText = workspaceController.workspace.name!;
           });
         },
@@ -114,7 +107,6 @@ class _SlotsPageState extends State<SlotsPage> {
 
     return GridOptions(buttons: buttons);
   }
-
 
   void _performDelete() async {
     await workspaceDAO.delete(workspaceController.workspace.id!);
@@ -152,5 +144,10 @@ class _SlotsPageState extends State<SlotsPage> {
         );
       },
     );
+  }
+
+  void _redirectToAddSlotsPage() {
+    var page = MaterialPageRoute(builder: (ctx) => const AddSlotPage());
+    Navigator.of(context).push(page);
   }
 }
