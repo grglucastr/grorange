@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/components/dialog_delete_confirm.dart';
+import 'package:grorange/components/dialog_edit_names.dart';
 import 'package:grorange/components/page_app_bar_with_actions.dart';
 import 'package:grorange/components/page_title.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
@@ -10,6 +11,7 @@ import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/database/dao/workspace_dao.dart';
+import 'package:grorange/models/workspace.dart';
 import 'package:grorange/pages/home_page.dart';
 
 class SlotsPage extends StatefulWidget {
@@ -34,7 +36,7 @@ class _SlotsPageState extends State<SlotsPage> {
       appBar: PageAppBarWithActions(
         actions: [
           IconButton(
-            onPressed: () => {},
+            onPressed: () => _showEditDialog(),
             icon: const Icon(Icons.edit),
           ),
           IconButton(
@@ -78,5 +80,34 @@ class _SlotsPageState extends State<SlotsPage> {
       var page = MaterialPageRoute(builder: (ctx) => const Home());
       Navigator.pushAndRemoveUntil(context, page, (route) => false);
     }
+  }
+
+  void _showEditDialog() {
+    final TextEditingController titleController = TextEditingController();
+    titleController.text = workspaceController.workspace.name!;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DialogEditNames(
+          title: 'New workspace name',
+          controller: titleController,
+          onConfirm: () {
+            workspaceDAO
+                .updateName(
+                workspaceController.workspace.id!, titleController.text)
+                .then((value) {
+              if (value == 1) {
+                Workspace wk = workspaceController.workspace;
+                wk.name = titleController.text;
+                workspaceController.workspace = wk;
+                appBarController.titleText = titleController.text;
+              }
+              Navigator.pop(context);
+            });
+          },
+        );
+      },
+    );
   }
 }
