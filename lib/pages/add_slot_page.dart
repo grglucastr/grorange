@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/controllers/slot_controller.dart';
 import 'package:grorange/controllers/user_controller.dart';
+import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/models/slot.dart';
 import 'package:grorange/models/workspace.dart';
 import 'package:uuid/uuid.dart';
 
 class AddSlotPage extends StatefulWidget {
-  final Workspace workspace;
-  const AddSlotPage({required this.workspace, super.key});
+  const AddSlotPage({super.key});
 
   @override
   State<AddSlotPage> createState() => _AddSlotPageState();
@@ -17,6 +18,17 @@ class AddSlotPage extends StatefulWidget {
 
 class _AddSlotPageState extends State<AddSlotPage> {
   final TextEditingController _slotNameController = TextEditingController();
+  final WorkspaceController workspaceController = Get.find();
+  final SlotController slotController = Get.find();
+  final UserController userController = Get.find();
+
+  late Workspace workspace;
+
+  @override
+  void initState() {
+    super.initState();
+    workspace =  workspaceController.workspace;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,17 +86,16 @@ class _AddSlotPageState extends State<AddSlotPage> {
     var dao = SlotDAO();
     var uuid = const Uuid();
 
-    final UserController userController = Get.find();
-
     final Slot slot = Slot(
       uuid.v4(),
       _slotNameController.text,
       userController.user.id!,
-      widget.workspace.id!,
+      workspace.id!,
       DateTime.now(),
       null,
     );
 
     await dao.save(slot);
+    slotController.add(slot);
   }
 }
