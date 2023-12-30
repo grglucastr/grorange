@@ -1,7 +1,9 @@
+import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/components/page_app_bar.dart';
 import 'package:grorange/controllers/user_controller.dart';
+import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/workspace_dao.dart';
 import 'package:grorange/models/workspace.dart';
 import 'package:uuid/uuid.dart';
@@ -31,9 +33,7 @@ class _AddWorkspacePageState extends State<AddWorkspacePage> {
               alignment: Alignment.centerLeft,
               child: Text(
                 'Workspace name',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(fontWeight: FontWeight.w500),
               ),
             ),
             const SizedBox(height: 8),
@@ -74,6 +74,7 @@ class _AddWorkspacePageState extends State<AddWorkspacePage> {
   void _save() async {
     var uuid = const Uuid();
     final UserController userController = Get.find();
+    final WorkspaceController workspaceController = Get.find();
 
     final Workspace workspace = Workspace(
       uuid.v4(),
@@ -83,7 +84,10 @@ class _AddWorkspacePageState extends State<AddWorkspacePage> {
       userController.user.id,
     );
 
+    safePrint('Saving new workspace: ${workspace.toString()}');
+
     var dao = WorkspaceDAO();
     await dao.save(workspace);
+    workspaceController.add(workspace);
   }
 }
