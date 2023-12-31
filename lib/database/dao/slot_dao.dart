@@ -37,8 +37,8 @@ class SlotDAO {
 
   Future<int> updateName(String slotID, String newName) async {
     final Database db = await getDatabase();
-    final DateTime updateDateTime = DateTime.now();
-    const String sql = 'UPDATE $tableName SET $_name = ? $_updateDateTime = ? WHERE $_id = ?';
+    final String updateDateTime = DateTime.now().toString();
+    const String sql = 'UPDATE $tableName SET $_name = ?, $_updateDateTime = ? WHERE $_id = ?';
     final int rowsUpdated = await db.rawUpdate(sql, [newName, updateDateTime, slotID]);
     if(rowsUpdated > 0) {
       debugPrint('Updated successfully');
