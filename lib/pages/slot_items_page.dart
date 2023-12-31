@@ -254,7 +254,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
           description:
               'Delete slot: ${slotController.slot.name}\n\nWARNING:\nAll items related to this slot will be lost. Are you sure you want to proceed?',
           onConfirm: () {
-            slotDAO.delete(slotController.slot.id!);
+            slotDAO.delete(slotController.slot);
             slotController.delete(slotController.slot);
 
             appBarController.titleText = workspaceController.workspace.name!;

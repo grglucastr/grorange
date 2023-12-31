@@ -25,18 +25,21 @@ class SlotDAO {
 
   Future<int> save(Slot slot) async {
     final Database db = await getDatabase();
-    return db.insert(tableName, slot.toMap());
+    return await db.insert(tableName, slot.toMap());
   }
 
-  Future<int> delete(String slotID) async {
+  Future<int> delete(Slot slot) async {
     final Database db = await getDatabase();
-    return await db.delete(tableName, where: '$_id=?', whereArgs: [slotID]);
+    slot.active = false;
+    slot.updateDateTime = DateTime.now();
+    return await db.update(tableName, slot.toMap(), where: '$_id = ?', whereArgs: [slot.id]);
   }
 
   Future<int> updateName(String slotID, String newName) async {
     final Database db = await getDatabase();
-    const String sql = 'UPDATE $tableName SET $_name = ? WHERE $_id = ?';
-    final int rowsUpdated = await db.rawUpdate(sql, [newName, slotID]);
+    final DateTime updateDateTime = DateTime.now();
+    const String sql = 'UPDATE $tableName SET $_name = ? $_updateDateTime = ? WHERE $_id = ?';
+    final int rowsUpdated = await db.rawUpdate(sql, [newName, updateDateTime, slotID]);
     if(rowsUpdated > 0) {
       debugPrint('Updated successfully');
     }else{
@@ -49,7 +52,7 @@ class SlotDAO {
     final Database db = await getDatabase();
     List<Map<String, dynamic>> rows = await db.query(
       tableName,
-      where: '$_workspaceId=?',
+      where: '$_workspaceId=? AND $_active = 1',
       whereArgs: [workspaceID],
     );
 
