@@ -27,33 +27,45 @@ class WorkspaceDAO {
     return await db.insert(tableName, workspace.toMap());
   }
 
-  Future<int> delete(String workspaceID) async {
+  Future<int> delete(Workspace workspace) async {
     final Database db = await getDatabase();
-    return await db.delete(tableName, where: '$_id=?', whereArgs: [workspaceID]);
+    workspace.active = false;
+    workspace.updateDateTime = DateTime.now();
+    return await db.update(
+      tableName,
+      workspace.toMap(),
+      where: '$_id = ?',
+      whereArgs: [workspace.id],
+    );
   }
 
   Future<int> updateName(String workspaceID, String newName) async {
     final Database db = await getDatabase();
-    const String sql = 'UPDATE $tableName SET $_name = ? WHERE $_id = ?';
-    final int rowsUpdated = await db.rawUpdate(sql, [newName, workspaceID]);
-    if(rowsUpdated > 0) {
+    final String updateDateTime = DateTime.now().toString();
+    const String sql =
+        'UPDATE $tableName SET $_name = ?, $_updateDateTime = ? WHERE $_id = ?';
+    final int rowsUpdated =
+        await db.rawUpdate(sql, [newName, updateDateTime, workspaceID]);
+    if (rowsUpdated > 0) {
       debugPrint('Updated successfully');
-    }else{
+    } else {
       debugPrint('Error while updating');
     }
 
     return rowsUpdated;
-
   }
 
   Future<List<Workspace>> findAllByUserId(String userId) async {
     final List<Workspace> workspaces = List.empty(growable: true);
 
     final Database db = await getDatabase();
-    List<Map<String, dynamic>> rows = await db
-        .query(tableName, where: 'user_id = ?', whereArgs: [userId]);
+    List<Map<String, dynamic>> rows = await db.query(
+      tableName,
+      where: '$_userId = ? AND $_active = 1',
+      whereArgs: [userId],
+    );
 
-    for(Map<String, dynamic> row in rows){
+    for (Map<String, dynamic> row in rows) {
       workspaces.add(Workspace.fromMap(row));
     }
     return workspaces;

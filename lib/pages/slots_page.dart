@@ -109,7 +109,7 @@ class _SlotsPageState extends State<SlotsPage> {
   }
 
   void _performDelete() async {
-    await workspaceDAO.delete(workspaceController.workspace.id!);
+    await workspaceDAO.delete(workspaceController.workspace);
     if (context.mounted) {
       appBarController.titleText = "Welcome, ${userController.firstName}";
       var page = MaterialPageRoute(builder: (ctx) => const Home());
