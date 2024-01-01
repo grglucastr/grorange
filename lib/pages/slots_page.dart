@@ -17,7 +17,6 @@ import 'package:grorange/database/dao/workspace_dao.dart';
 import 'package:grorange/models/slot.dart';
 import 'package:grorange/models/workspace.dart';
 import 'package:grorange/pages/add_slot_page.dart';
-import 'package:grorange/pages/home_page.dart';
 import 'package:grorange/pages/slot_items_page.dart';
 
 class SlotsPage extends StatefulWidget {
@@ -124,11 +123,20 @@ class _SlotsPageState extends State<SlotsPage> {
   }
 
   void _performDelete() async {
+    final String workspaceName = workspaceController.workspace.name!;
     await workspaceDAO.delete(workspaceController.workspace);
+    workspaceController.delete(workspaceController.workspace);
     if (context.mounted) {
       appBarController.titleText = "Welcome, ${userController.firstName}";
-      var page = MaterialPageRoute(builder: (ctx) => const Home());
-      Navigator.pushAndRemoveUntil(context, page, (route) => false);
+
+      final Map<String, dynamic> feedback = {
+        'action': 'delete',
+        'successfully': true,
+        'workspace_name': workspaceName,
+      };
+
+      Navigator.pop(context); //dismiss dialog
+      Navigator.pop(context, feedback); // return to workspaces page
     }
   }
 

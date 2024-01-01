@@ -76,7 +76,21 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
 
   Future<void> _redirectToSlots() {
     var page = MaterialPageRoute(builder: (ctx) => const SlotsPage());
-    return Navigator.of(context).push(page).then((v) => _setAppBar());
+    return Navigator.of(context).push(page).then((v){
+      _setAppBar();
+      _showSnackBarFeedback(v);
+    });
+  }
+
+  void _showSnackBarFeedback(v) {
+    if(v != null){
+      final Map<String, dynamic> feedback = v;
+      if(feedback['action'] == 'delete'){
+        final String wkName = feedback['workspace_name'];
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Workspace $wkName deleted')));
+      }
+    }
   }
 
   Future<void> _redirectAddWorkspace() {

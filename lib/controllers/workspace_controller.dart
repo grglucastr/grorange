@@ -25,4 +25,10 @@ class WorkspaceController extends GetxController {
     wks.add(workspace);
     workspaces = wks;
   }
+
+  void delete(Workspace workspace){
+    final List<Workspace> lst = workspaces.where((wk) => wk.id != workspace.id)
+        .toList(growable: true);
+    workspaces = lst;
+  }
 }
