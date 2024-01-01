@@ -93,19 +93,34 @@ class _SlotsPageState extends State<SlotsPage> {
     for (var slot in slots) {
       buttons.add(GridButton(
         text: slot.name!,
-        onTap: () {
-          itemController.clear();
-          slotController.slot = slot;
-          appBarController.titleText = slot.name!;
-          var page = MaterialPageRoute(builder: (ctx) => const SlotItemsPage());
-          Navigator.of(context).push(page).then((value) {
-            appBarController.titleText = workspaceController.workspace.name!;
-          });
-        },
+        onTap: () => _handleSlotSelect(slot),
       ));
     }
 
     return GridOptions(buttons: buttons);
+  }
+
+  void _handleSlotSelect(Slot slot) {
+    itemController.clear();
+    slotController.slot = slot;
+    appBarController.titleText = slot.name!;
+
+    var page = MaterialPageRoute(builder: (ctx) => const SlotItemsPage());
+    Navigator.of(context).push(page).then((value) {
+      appBarController.titleText = workspaceController.workspace.name!;
+      _handleSnackBarFeedback(value);
+    });
+  }
+
+  void _handleSnackBarFeedback(value) {
+    if (value != null) {
+      final Map<String, dynamic> feedback = value;
+      if (feedback['action'] == 'delete') {
+        final String slotName = feedback['slot_name'];
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Slot $slotName was deleted')));
+      }
+    }
   }
 
   void _performDelete() async {
@@ -127,23 +142,25 @@ class _SlotsPageState extends State<SlotsPage> {
         return DialogEditNames(
           title: 'New workspace name',
           controller: titleController,
-          onConfirm: () {
-            workspaceDAO
-                .updateName(
-                    workspaceController.workspace.id!, titleController.text)
-                .then((value) {
-              if (value == 1) {
-                Workspace wk = workspaceController.workspace;
-                wk.name = titleController.text;
-                workspaceController.workspace = wk;
-                appBarController.titleText = titleController.text;
-              }
-              Navigator.pop(context);
-            });
-          },
+          onConfirm: () => _confirmUpdate(titleController, context),
         );
       },
     );
+  }
+
+  void _confirmUpdate(
+      TextEditingController titleController, BuildContext context) {
+    workspaceDAO
+        .updateName(workspaceController.workspace.id!, titleController.text)
+        .then((value) {
+      if (value == 1) {
+        Workspace wk = workspaceController.workspace;
+        wk.name = titleController.text;
+        workspaceController.workspace = wk;
+        appBarController.titleText = titleController.text;
+      }
+      Navigator.pop(context);
+    });
   }
 
   void _redirectToAddSlotsPage() {

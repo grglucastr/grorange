@@ -16,7 +16,6 @@ import 'package:grorange/models/item.dart';
 import 'package:grorange/models/slot.dart';
 import 'package:grorange/pages/add_slot_item_page.dart';
 import 'package:grorange/pages/edit_slot_item_page.dart';
-import 'package:grorange/pages/slots_page.dart';
 
 class SlotItemsPage extends StatefulWidget {
   const SlotItemsPage({super.key});
@@ -191,23 +190,20 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
       onTap: () {
         appBarController.titleText = 'Edit ${item.name}';
         itemController.item = item;
+        var page =
+            MaterialPageRoute(builder: (context) => const EditSlotItemPage());
 
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const EditSlotItemPage())).then(
-          (value) {
-            appBarController.titleText = slotController.slot.name!;
-            _handleFeedbackFromEditPage(value);
-          },
-        );
+        Navigator.push(context, page).then((value) {
+          appBarController.titleText = slotController.slot.name!;
+          _handleFeedbackFromEditPage(value);
+        });
       },
     );
   }
 
   void _handleFeedbackFromEditPage(value) {
     if (value != null) {
-      Map<String, dynamic> feedback = value;
+      final Map<String, dynamic> feedback = value;
       if (feedback['action'] == 'update' && feedback['successfully']) {
         _showUpdatedSnackbar();
       }
@@ -253,14 +249,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
           title: 'Delete Slot',
           description:
               'Delete slot: ${slotController.slot.name}\n\nWARNING:\nAll items related to this slot will be lost. Are you sure you want to proceed?',
-          onConfirm: () {
-            slotDAO.delete(slotController.slot);
-            slotController.delete(slotController.slot);
-
-            appBarController.titleText = workspaceController.workspace.name!;
-            Navigator.pop(context); // dismiss dialog
-            Navigator.pop(context); // return slots page
-          },
+          onConfirm: () => _confirmDelete(context),
         );
       },
     );
@@ -322,5 +311,22 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
           .where((it) => it.name.toLowerCase().contains(query.toLowerCase()))
           .toList(growable: true);
     });
+  }
+
+  void _confirmDelete(BuildContext context) {
+    final String slotName = slotController.slot.name!;
+    slotDAO.delete(slotController.slot);
+    slotController.delete(slotController.slot);
+
+    appBarController.titleText = workspaceController.workspace.name!;
+
+    Navigator.pop(context); // dismiss dialog
+
+    final Map<String, dynamic> feedback = {
+      'action': 'delete',
+      'successfully': true,
+      'slot_name': slotName,
+    };
+    Navigator.pop(context, feedback); // return to previous page
   }
 }

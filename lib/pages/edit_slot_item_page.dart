@@ -46,7 +46,7 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
                 final int deleted = await dao.delete(item);
                 if (deleted == 1) {
                   if (context.mounted) {
-                    Map<String, dynamic> feedback = {
+                    final Map<String, dynamic> feedback = {
                       'action': 'delete',
                       'successfully': true,
                       'item_name': item.name,
