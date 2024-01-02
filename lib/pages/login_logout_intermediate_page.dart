@@ -8,6 +8,7 @@ import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/pages/home_page.dart';
 import 'package:grorange/pages/login_page.dart';
 import 'package:grorange/services/amplify_auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginLogoutIntermediatePage extends StatefulWidget {
   const LoginLogoutIntermediatePage({super.key});
@@ -21,6 +22,7 @@ class _LoginLogoutIntermediatePageState
     extends State<LoginLogoutIntermediatePage> {
   @override
   void initState() {
+    super.initState();
     UserController controller = Get.find();
 
     if (controller.loginInProgress) {
@@ -33,10 +35,14 @@ class _LoginLogoutIntermediatePageState
   }
 
   void _doSignIn(UserController controller) async {
-    AmplifyAuthService authService = AmplifyAuthService();
+    final AmplifyAuthService authService = AmplifyAuthService();
     final SignInResult? result = await authService.socialSignIn();
+
     if (result != null && result.isSignedIn) {
       controller.loginInProgress = false;
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('logged', true);
 
       final List<AuthUserAttribute>? attrs = await authService.fetchCurrentUserAttributes();
       final AuthUserAttribute nameAttr = attrs!.firstWhere((attr) => _findNameAttribute(attr));
@@ -51,8 +57,11 @@ class _LoginLogoutIntermediatePageState
     }
   }
 
-  void _doSignOut(UserController controller) {
-    AmplifyAuthService authService = AmplifyAuthService();
+  void _doSignOut(UserController controller) async {
+    final AmplifyAuthService authService = AmplifyAuthService();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove("logged");
+
     authService.signOut().then((result) {
       controller.logoutInProgress = false;
       if (context.mounted) {
