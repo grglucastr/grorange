@@ -41,13 +41,14 @@ class _LoginLogoutIntermediatePageState
     if (result != null && result.isSignedIn) {
       controller.loginInProgress = false;
 
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('logged', true);
-
       final List<AuthUserAttribute>? attrs = await authService.fetchCurrentUserAttributes();
       final AuthUserAttribute nameAttr = attrs!.firstWhere((attr) => _findNameAttribute(attr));
       final String fullName = nameAttr.value;
       controller.name = fullName;
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('logged', true);
+      await prefs.setString("user_data", controller.user.toJson());
 
       if (context.mounted) {
         AppBarController appBarController = Get.find();
