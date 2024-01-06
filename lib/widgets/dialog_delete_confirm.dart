@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grorange/widgets/dialog_box_title.dart';
+import 'package:grorange/core_widgets/dialog_box_title.dart';
 
 class DialogDeleteConfirm extends StatelessWidget {
   final String title;
