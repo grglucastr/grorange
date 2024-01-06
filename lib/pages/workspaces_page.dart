@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grorange/components/grid_button.dart';
-import 'package:grorange/components/grid_empty.dart';
-import 'package:grorange/components/grid_options.dart';
-import 'package:grorange/components/page_app_bar_with_actions.dart';
-import 'package:grorange/components/page_title.dart';
+import 'package:grorange/widgets/grid_button.dart';
+import 'package:grorange/widgets/grid_empty.dart';
+import 'package:grorange/widgets/grid_options.dart';
+import 'package:grorange/widgets/page_app_bar_with_actions.dart';
+import 'package:grorange/widgets/page_title.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';

@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grorange/components/dialog_delete_confirm.dart';
-import 'package:grorange/components/dialog_edit_names.dart';
-import 'package:grorange/components/grid_empty.dart';
-import 'package:grorange/components/page_app_bar_with_actions.dart';
+import 'package:grorange/widgets/dialog_delete_confirm.dart';
+import 'package:grorange/widgets/dialog_edit_names.dart';
+import 'package:grorange/widgets/grid_empty.dart';
+import 'package:grorange/widgets/page_app_bar_with_actions.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/controllers/slot_controller.dart';

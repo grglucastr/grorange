@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/widgets/page_app_bar.dart';
 import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/database/dao/item_dao.dart';
