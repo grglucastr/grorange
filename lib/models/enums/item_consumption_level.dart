@@ -1,8 +1,8 @@
 enum ItemConsumptionLevel {
-  safe(text: 'Safe', minPercentage: 75, maxPercentage: 100),
-  moderate(text: 'Moderate', minPercentage: 50, maxPercentage: 75),
-  severe(text: 'Severe', minPercentage: 25, maxPercentage: 50),
-  critical(text: 'Critical', minPercentage: 0, maxPercentage: 25);
+  safe(text: 'Full', minPercentage: 75, maxPercentage: 100),
+  moderate(text: 'Almost Full', minPercentage: 50, maxPercentage: 75),
+  severe(text: 'Almost Empty', minPercentage: 25, maxPercentage: 50),
+  critical(text: 'Empty', minPercentage: 0, maxPercentage: 25);
 
   final String text;
   final int minPercentage;
