@@ -1,7 +1,7 @@
 import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grorange/components/page_app_bar.dart';
+import 'package:grorange/widgets/page_app_bar.dart';
 import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/workspace_dao.dart';
