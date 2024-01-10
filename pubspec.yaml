@@ -43,6 +43,7 @@ dependencies:
   amplify_core: ^1.6.2
   amplify_auth_cognito: ^1.6.1
   shared_preferences: ^2.2.2
+  amplify_datastore: ^1.6.0
 
 dev_dependencies:
   flutter_test:
