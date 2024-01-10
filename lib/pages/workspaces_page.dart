@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/core_widgets/grid_button.dart';
+import 'package:grorange/database/temp/workspace_dao.dart';
 import 'package:grorange/widgets/grid_empty.dart';
 import 'package:grorange/widgets/grid_options.dart';
 import 'package:grorange/widgets/page_app_bar_with_actions.dart';
@@ -32,6 +33,9 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
     workspaceController.workspaces = await wkDAO
         .findAllByUserId(userController.user.id!);
     _setAppBar();
+
+    await saveWorkspace();
+    await queryWorkspaces();
   }
 
   @override
