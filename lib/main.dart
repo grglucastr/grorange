@@ -1,4 +1,3 @@
-import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/app.dart';
@@ -40,7 +39,6 @@ Future<void> loadLoggedUser() async {
     final String? rawUserData = prefs.getString("user_data");
 
     if(rawUserData != null){
-      safePrint('raw user data: ${rawUserData}');
       userController.userSignedIn = true;
       userController.user = User.fromJson(rawUserData);
       userController.name = userController.user.name;
