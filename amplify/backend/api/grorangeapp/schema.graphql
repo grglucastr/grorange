@@ -1,0 +1,43 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+type User @model {
+  id: ID!
+  name: String!
+  workspaces: [Workspace] @hasMany
+  slots: [Slot] @hasMany
+  items: [Item] @hasMany
+}
+
+type Workspace @model {
+  id: ID!
+  name: String!
+  user: User @belongsTo
+  slots: [Slot] @hasMany
+}
+
+type Slot @model {
+  id: ID!
+  name: String!
+  user: User @belongsTo
+  workspace: Workspace @belongsTo
+  items: [Item] @hasMany
+}
+
+type Item @model {
+  id: ID!
+  name: String!
+  quantity: Int
+  usagePercentage: Float
+  consumptionLevel: ItemConsumptionLevel
+  user: User @belongsTo
+  slot: Slot @belongsTo
+}
+
+enum ItemConsumptionLevel{
+  FULL
+  ALMOST_FULL
+  ALMOST_EMPTY
+  EMPTY
+}
