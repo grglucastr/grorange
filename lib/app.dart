@@ -1,8 +1,10 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grorange/controllers/user_controller.dart';
+import 'package:grorange/models/ModelProvider.dart';
 import 'package:grorange/pages/home_page.dart';
 import 'package:grorange/pages/login_page.dart';
 
@@ -27,6 +29,10 @@ class _AppState extends State<App> {
 
   Future<void> _configureAmplify() async {
     try {
+
+      final datastorePlugin = AmplifyDataStore(modelProvider: ModelProvider.instance);
+      await Amplify.addPlugin(datastorePlugin);
+
       final auth = AmplifyAuthCognito();
       await Amplify.addPlugin(auth);
 
