@@ -31,6 +31,7 @@ class Item extends amplify_core.Model {
   final int? _quantity;
   final double? _usagePercentage;
   final ItemConsumptionLevel? _consumptionLevel;
+  final bool? _active;
   final User? _user;
   final Slot? _slot;
   final amplify_core.TemporalDateTime? _createdAt;
@@ -74,6 +75,10 @@ class Item extends amplify_core.Model {
     return _consumptionLevel;
   }
   
+  bool? get active {
+    return _active;
+  }
+  
   User? get user {
     return _user;
   }
@@ -90,15 +95,16 @@ class Item extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Item._internal({required this.id, required name, quantity, usagePercentage, consumptionLevel, user, slot, createdAt, updatedAt}): _name = name, _quantity = quantity, _usagePercentage = usagePercentage, _consumptionLevel = consumptionLevel, _user = user, _slot = slot, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Item._internal({required this.id, required name, quantity, usagePercentage, consumptionLevel, active, user, slot, createdAt, updatedAt}): _name = name, _quantity = quantity, _usagePercentage = usagePercentage, _consumptionLevel = consumptionLevel, _active = active, _user = user, _slot = slot, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Item({String? id, required String name, int? quantity, double? usagePercentage, ItemConsumptionLevel? consumptionLevel, User? user, Slot? slot}) {
+  factory Item({String? id, required String name, int? quantity, double? usagePercentage, ItemConsumptionLevel? consumptionLevel, bool? active, User? user, Slot? slot}) {
     return Item._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
       quantity: quantity,
       usagePercentage: usagePercentage,
       consumptionLevel: consumptionLevel,
+      active: active,
       user: user,
       slot: slot);
   }
@@ -116,6 +122,7 @@ class Item extends amplify_core.Model {
       _quantity == other._quantity &&
       _usagePercentage == other._usagePercentage &&
       _consumptionLevel == other._consumptionLevel &&
+      _active == other._active &&
       _user == other._user &&
       _slot == other._slot;
   }
@@ -133,6 +140,7 @@ class Item extends amplify_core.Model {
     buffer.write("quantity=" + (_quantity != null ? _quantity!.toString() : "null") + ", ");
     buffer.write("usagePercentage=" + (_usagePercentage != null ? _usagePercentage!.toString() : "null") + ", ");
     buffer.write("consumptionLevel=" + (_consumptionLevel != null ? amplify_core.enumToString(_consumptionLevel)! : "null") + ", ");
+    buffer.write("active=" + (_active != null ? _active!.toString() : "null") + ", ");
     buffer.write("user=" + (_user != null ? _user!.toString() : "null") + ", ");
     buffer.write("slot=" + (_slot != null ? _slot!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
@@ -142,13 +150,14 @@ class Item extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Item copyWith({String? name, int? quantity, double? usagePercentage, ItemConsumptionLevel? consumptionLevel, User? user, Slot? slot}) {
+  Item copyWith({String? name, int? quantity, double? usagePercentage, ItemConsumptionLevel? consumptionLevel, bool? active, User? user, Slot? slot}) {
     return Item._internal(
       id: id,
       name: name ?? this.name,
       quantity: quantity ?? this.quantity,
       usagePercentage: usagePercentage ?? this.usagePercentage,
       consumptionLevel: consumptionLevel ?? this.consumptionLevel,
+      active: active ?? this.active,
       user: user ?? this.user,
       slot: slot ?? this.slot);
   }
@@ -158,6 +167,7 @@ class Item extends amplify_core.Model {
     ModelFieldValue<int?>? quantity,
     ModelFieldValue<double?>? usagePercentage,
     ModelFieldValue<ItemConsumptionLevel?>? consumptionLevel,
+    ModelFieldValue<bool?>? active,
     ModelFieldValue<User?>? user,
     ModelFieldValue<Slot?>? slot
   }) {
@@ -167,6 +177,7 @@ class Item extends amplify_core.Model {
       quantity: quantity == null ? this.quantity : quantity.value,
       usagePercentage: usagePercentage == null ? this.usagePercentage : usagePercentage.value,
       consumptionLevel: consumptionLevel == null ? this.consumptionLevel : consumptionLevel.value,
+      active: active == null ? this.active : active.value,
       user: user == null ? this.user : user.value,
       slot: slot == null ? this.slot : slot.value
     );
@@ -178,6 +189,7 @@ class Item extends amplify_core.Model {
       _quantity = (json['quantity'] as num?)?.toInt(),
       _usagePercentage = (json['usagePercentage'] as num?)?.toDouble(),
       _consumptionLevel = amplify_core.enumFromString<ItemConsumptionLevel>(json['consumptionLevel'], ItemConsumptionLevel.values),
+      _active = json['active'],
       _user = json['user']?['serializedData'] != null
         ? User.fromJson(new Map<String, dynamic>.from(json['user']['serializedData']))
         : null,
@@ -188,7 +200,7 @@ class Item extends amplify_core.Model {
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'quantity': _quantity, 'usagePercentage': _usagePercentage, 'consumptionLevel': amplify_core.enumToString(_consumptionLevel), 'user': _user?.toJson(), 'slot': _slot?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'quantity': _quantity, 'usagePercentage': _usagePercentage, 'consumptionLevel': amplify_core.enumToString(_consumptionLevel), 'active': _active, 'user': _user?.toJson(), 'slot': _slot?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -197,6 +209,7 @@ class Item extends amplify_core.Model {
     'quantity': _quantity,
     'usagePercentage': _usagePercentage,
     'consumptionLevel': _consumptionLevel,
+    'active': _active,
     'user': _user,
     'slot': _slot,
     'createdAt': _createdAt,
@@ -209,6 +222,7 @@ class Item extends amplify_core.Model {
   static final QUANTITY = amplify_core.QueryField(fieldName: "quantity");
   static final USAGEPERCENTAGE = amplify_core.QueryField(fieldName: "usagePercentage");
   static final CONSUMPTIONLEVEL = amplify_core.QueryField(fieldName: "consumptionLevel");
+  static final ACTIVE = amplify_core.QueryField(fieldName: "active");
   static final USER = amplify_core.QueryField(
     fieldName: "user",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'User'));
@@ -243,6 +257,12 @@ class Item extends amplify_core.Model {
       key: Item.CONSUMPTIONLEVEL,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.enumeration)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Item.ACTIVE,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.bool)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(

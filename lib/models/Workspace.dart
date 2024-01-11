@@ -29,6 +29,7 @@ class Workspace extends amplify_core.Model {
   static const classType = const _WorkspaceModelType();
   final String id;
   final String? _name;
+  final bool? _active;
   final User? _user;
   final List<Slot>? _slots;
   final amplify_core.TemporalDateTime? _createdAt;
@@ -60,6 +61,10 @@ class Workspace extends amplify_core.Model {
     }
   }
   
+  bool? get active {
+    return _active;
+  }
+  
   User? get user {
     return _user;
   }
@@ -76,12 +81,13 @@ class Workspace extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Workspace._internal({required this.id, required name, user, slots, createdAt, updatedAt}): _name = name, _user = user, _slots = slots, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Workspace._internal({required this.id, required name, active, user, slots, createdAt, updatedAt}): _name = name, _active = active, _user = user, _slots = slots, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Workspace({String? id, required String name, User? user, List<Slot>? slots}) {
+  factory Workspace({String? id, required String name, bool? active, User? user, List<Slot>? slots}) {
     return Workspace._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
+      active: active,
       user: user,
       slots: slots != null ? List<Slot>.unmodifiable(slots) : slots);
   }
@@ -96,6 +102,7 @@ class Workspace extends amplify_core.Model {
     return other is Workspace &&
       id == other.id &&
       _name == other._name &&
+      _active == other._active &&
       _user == other._user &&
       DeepCollectionEquality().equals(_slots, other._slots);
   }
@@ -110,6 +117,7 @@ class Workspace extends amplify_core.Model {
     buffer.write("Workspace {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("name=" + "$_name" + ", ");
+    buffer.write("active=" + (_active != null ? _active!.toString() : "null") + ", ");
     buffer.write("user=" + (_user != null ? _user!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
@@ -118,22 +126,25 @@ class Workspace extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Workspace copyWith({String? name, User? user, List<Slot>? slots}) {
+  Workspace copyWith({String? name, bool? active, User? user, List<Slot>? slots}) {
     return Workspace._internal(
       id: id,
       name: name ?? this.name,
+      active: active ?? this.active,
       user: user ?? this.user,
       slots: slots ?? this.slots);
   }
   
   Workspace copyWithModelFieldValues({
     ModelFieldValue<String>? name,
+    ModelFieldValue<bool?>? active,
     ModelFieldValue<User?>? user,
     ModelFieldValue<List<Slot>?>? slots
   }) {
     return Workspace._internal(
       id: id,
       name: name == null ? this.name : name.value,
+      active: active == null ? this.active : active.value,
       user: user == null ? this.user : user.value,
       slots: slots == null ? this.slots : slots.value
     );
@@ -142,6 +153,7 @@ class Workspace extends amplify_core.Model {
   Workspace.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _name = json['name'],
+      _active = json['active'],
       _user = json['user']?['serializedData'] != null
         ? User.fromJson(new Map<String, dynamic>.from(json['user']['serializedData']))
         : null,
@@ -155,12 +167,13 @@ class Workspace extends amplify_core.Model {
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'user': _user?.toJson(), 'slots': _slots?.map((Slot? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'active': _active, 'user': _user?.toJson(), 'slots': _slots?.map((Slot? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'name': _name,
+    'active': _active,
     'user': _user,
     'slots': _slots,
     'createdAt': _createdAt,
@@ -170,6 +183,7 @@ class Workspace extends amplify_core.Model {
   static final amplify_core.QueryModelIdentifier<WorkspaceModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<WorkspaceModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final NAME = amplify_core.QueryField(fieldName: "name");
+  static final ACTIVE = amplify_core.QueryField(fieldName: "active");
   static final USER = amplify_core.QueryField(
     fieldName: "user",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'User'));
@@ -186,6 +200,12 @@ class Workspace extends amplify_core.Model {
       key: Workspace.NAME,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Workspace.ACTIVE,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.bool)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
