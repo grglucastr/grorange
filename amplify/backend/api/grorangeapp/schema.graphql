@@ -13,6 +13,7 @@ type User @model {
 type Workspace @model {
   id: ID!
   name: String!
+  active: Boolean
   user: User @belongsTo
   slots: [Slot] @hasMany
 }
@@ -20,6 +21,7 @@ type Workspace @model {
 type Slot @model {
   id: ID!
   name: String!
+  active: Boolean
   user: User @belongsTo
   workspace: Workspace @belongsTo
   items: [Item] @hasMany
@@ -31,6 +33,7 @@ type Item @model {
   quantity: Int
   usagePercentage: Float
   consumptionLevel: ItemConsumptionLevel
+  active: Boolean
   user: User @belongsTo
   slot: Slot @belongsTo
 }

@@ -29,6 +29,7 @@ class Slot extends amplify_core.Model {
   static const classType = const _SlotModelType();
   final String id;
   final String? _name;
+  final bool? _active;
   final User? _user;
   final Workspace? _workspace;
   final List<Item>? _items;
@@ -61,6 +62,10 @@ class Slot extends amplify_core.Model {
     }
   }
   
+  bool? get active {
+    return _active;
+  }
+  
   User? get user {
     return _user;
   }
@@ -81,12 +86,13 @@ class Slot extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Slot._internal({required this.id, required name, user, workspace, items, createdAt, updatedAt}): _name = name, _user = user, _workspace = workspace, _items = items, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Slot._internal({required this.id, required name, active, user, workspace, items, createdAt, updatedAt}): _name = name, _active = active, _user = user, _workspace = workspace, _items = items, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Slot({String? id, required String name, User? user, Workspace? workspace, List<Item>? items}) {
+  factory Slot({String? id, required String name, bool? active, User? user, Workspace? workspace, List<Item>? items}) {
     return Slot._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
+      active: active,
       user: user,
       workspace: workspace,
       items: items != null ? List<Item>.unmodifiable(items) : items);
@@ -102,6 +108,7 @@ class Slot extends amplify_core.Model {
     return other is Slot &&
       id == other.id &&
       _name == other._name &&
+      _active == other._active &&
       _user == other._user &&
       _workspace == other._workspace &&
       DeepCollectionEquality().equals(_items, other._items);
@@ -117,6 +124,7 @@ class Slot extends amplify_core.Model {
     buffer.write("Slot {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("name=" + "$_name" + ", ");
+    buffer.write("active=" + (_active != null ? _active!.toString() : "null") + ", ");
     buffer.write("user=" + (_user != null ? _user!.toString() : "null") + ", ");
     buffer.write("workspace=" + (_workspace != null ? _workspace!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
@@ -126,10 +134,11 @@ class Slot extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Slot copyWith({String? name, User? user, Workspace? workspace, List<Item>? items}) {
+  Slot copyWith({String? name, bool? active, User? user, Workspace? workspace, List<Item>? items}) {
     return Slot._internal(
       id: id,
       name: name ?? this.name,
+      active: active ?? this.active,
       user: user ?? this.user,
       workspace: workspace ?? this.workspace,
       items: items ?? this.items);
@@ -137,6 +146,7 @@ class Slot extends amplify_core.Model {
   
   Slot copyWithModelFieldValues({
     ModelFieldValue<String>? name,
+    ModelFieldValue<bool?>? active,
     ModelFieldValue<User?>? user,
     ModelFieldValue<Workspace?>? workspace,
     ModelFieldValue<List<Item>?>? items
@@ -144,6 +154,7 @@ class Slot extends amplify_core.Model {
     return Slot._internal(
       id: id,
       name: name == null ? this.name : name.value,
+      active: active == null ? this.active : active.value,
       user: user == null ? this.user : user.value,
       workspace: workspace == null ? this.workspace : workspace.value,
       items: items == null ? this.items : items.value
@@ -153,6 +164,7 @@ class Slot extends amplify_core.Model {
   Slot.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _name = json['name'],
+      _active = json['active'],
       _user = json['user']?['serializedData'] != null
         ? User.fromJson(new Map<String, dynamic>.from(json['user']['serializedData']))
         : null,
@@ -169,12 +181,13 @@ class Slot extends amplify_core.Model {
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'user': _user?.toJson(), 'workspace': _workspace?.toJson(), 'items': _items?.map((Item? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'active': _active, 'user': _user?.toJson(), 'workspace': _workspace?.toJson(), 'items': _items?.map((Item? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'name': _name,
+    'active': _active,
     'user': _user,
     'workspace': _workspace,
     'items': _items,
@@ -185,6 +198,7 @@ class Slot extends amplify_core.Model {
   static final amplify_core.QueryModelIdentifier<SlotModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<SlotModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final NAME = amplify_core.QueryField(fieldName: "name");
+  static final ACTIVE = amplify_core.QueryField(fieldName: "active");
   static final USER = amplify_core.QueryField(
     fieldName: "user",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'User'));
@@ -204,6 +218,12 @@ class Slot extends amplify_core.Model {
       key: Slot.NAME,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Slot.ACTIVE,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.bool)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
