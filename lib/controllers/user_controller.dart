@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:grorange/models/User.dart';
 
 class UserController extends GetxController {
-
   User? _user;
   String _name = "";
   bool _userSignedIn = false;
@@ -10,6 +9,7 @@ class UserController extends GetxController {
   bool _logoutInProgress = false;
 
   User get user => _user ?? User(name: 'none');
+
   set user(User? value) {
     _user = value;
     update();
@@ -41,12 +41,17 @@ class UserController extends GetxController {
   set name(String value) {
     User usr = _user ?? User(name: 'none');
     _name = value;
-    _user = User(id: usr.id, name:_name);
+    _user = User(
+      id: usr.id,
+      name: _name,
+      inserted_at: usr.inserted_at,
+      updated_at: usr.updated_at,
+    );
     update();
   }
 
   String get firstName {
-    if(_name.isEmpty){
+    if (_name.isEmpty) {
       return "";
     }
     return _name.split(" ")[0];
