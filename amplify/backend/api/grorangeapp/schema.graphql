@@ -5,6 +5,8 @@ input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONL
 type User @model {
   id: ID!
   name: String!
+  inserted_at: String
+  updated_at: String
   workspaces: [Workspace] @hasMany
   slots: [Slot] @hasMany
   items: [Item] @hasMany
@@ -14,6 +16,8 @@ type Workspace @model {
   id: ID!
   name: String!
   active: Boolean
+  inserted_at: String
+  updated_at: String
   user: User @belongsTo
   slots: [Slot] @hasMany
 }
@@ -22,6 +26,8 @@ type Slot @model {
   id: ID!
   name: String!
   active: Boolean
+  inserted_at: String
+  updated_at: String
   user: User @belongsTo
   workspace: Workspace @belongsTo
   items: [Item] @hasMany
@@ -34,6 +40,8 @@ type Item @model {
   usagePercentage: Float
   consumptionLevel: ItemConsumptionLevel
   active: Boolean
+  inserted_at: String
+  updated_at: String
   user: User @belongsTo
   slot: Slot @belongsTo
 }

@@ -33,7 +33,7 @@ export 'Workspace.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "6edca3e5852b2d08726a6dfaf78b3a96";
+  String version = "499869b845466ea214fb96bc6859e1a7";
   @override
   List<amplify_core.ModelSchema> modelSchemas = [Item.schema, Slot.schema, User.schema, Workspace.schema];
   @override
