@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:grorange/models/user.dart';
+import 'package:grorange/models/User.dart';
 
 class UserController extends GetxController {
 
@@ -9,7 +9,7 @@ class UserController extends GetxController {
   bool _loginInProgress = false;
   bool _logoutInProgress = false;
 
-  User get user => _user!;
+  User get user => _user ?? User(name: 'none');
   set user(User? value) {
     _user = value;
     update();
@@ -39,9 +39,9 @@ class UserController extends GetxController {
   String get name => _name;
 
   set name(String value) {
-    User usr = _user!;
+    User usr = _user ?? User(name: 'none');
     _name = value;
-    _user = User(usr.id, _name, usr.insertDateTime, usr.updateDateTime);
+    _user = User(id: usr.id, name:_name);
     update();
   }
 
