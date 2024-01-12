@@ -1,11 +1,12 @@
-import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grorange/widgets/page_app_bar.dart';
 import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
-import 'package:grorange/database/dao/workspace_dao.dart';
-import 'package:grorange/models/workspace.dart';
+import 'package:grorange/database/v2/dao/user_dao.dart';
+import 'package:grorange/database/v2/dao/workspace_dao.dart';
+import 'package:grorange/models/User.dart';
+import 'package:grorange/models/Workspace.dart';
+import 'package:grorange/widgets/page_app_bar.dart';
 import 'package:uuid/uuid.dart';
 
 class AddWorkspacePage extends StatefulWidget {
@@ -76,15 +77,19 @@ class _AddWorkspacePageState extends State<AddWorkspacePage> {
     final UserController userController = Get.find();
     final WorkspaceController workspaceController = Get.find();
 
-    final Workspace workspace = Workspace(
-      uuid.v4(),
-      _workspaceNameController.text,
-      DateTime.now(),
-      null,
-      userController.user.id,
-    );
+    final String wkName = _workspaceNameController.text;
+    final String userId = userController.user.id;
 
-    safePrint('Saving new workspace: ${workspace.toString()}');
+    final UserDAO userDAO = UserDAO();
+    final User? user = await userDAO.getById(userId);
+
+    final Workspace workspace = Workspace(
+      id: uuid.v4(),
+      name: wkName,
+      user: user,
+      active: true,
+      inserted_at: DateTime.now().toString()
+    );
 
     var dao = WorkspaceDAO();
     await dao.save(workspace);
