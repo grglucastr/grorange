@@ -7,10 +7,10 @@ import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/core_widgets/grid_button.dart';
 import 'package:grorange/core_widgets/page_title.dart';
-import 'package:grorange/database/dao/slot_dao.dart';
+import 'package:grorange/database/v2/dao/slot_dao.dart';
 import 'package:grorange/database/v2/dao/workspace_dao.dart';
 import 'package:grorange/models/Workspace.dart';
-import 'package:grorange/models/slot.dart';
+import 'package:grorange/models/Slot.dart';
 import 'package:grorange/pages/add_slot_page.dart';
 import 'package:grorange/pages/slot_items_page.dart';
 import 'package:grorange/widgets/dialog_delete_confirm.dart';
@@ -38,7 +38,7 @@ class _SlotsPageState extends State<SlotsPage> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    slotController.slots = await dao.findAll(workspaceController.workspace.id!);
+    await _loadSlots();
   }
 
   @override
@@ -91,7 +91,7 @@ class _SlotsPageState extends State<SlotsPage> {
     final List<GridButton> buttons = List.empty(growable: true);
     for (var slot in slots) {
       buttons.add(GridButton(
-        text: slot.name!,
+        text: slot.name,
         onTap: () => _handleSlotSelect(slot),
       ));
     }
@@ -106,7 +106,8 @@ class _SlotsPageState extends State<SlotsPage> {
 
     var page = MaterialPageRoute(builder: (ctx) => const SlotItemsPage());
     Navigator.of(context).push(page).then((value) {
-      appBarController.titleText = workspaceController.workspace.name!;
+      appBarController.titleText = workspaceController.workspace.name;
+      _loadSlots();
       _handleSnackBarFeedback(value);
     });
   }
@@ -165,6 +166,12 @@ class _SlotsPageState extends State<SlotsPage> {
       appBarController.titleText = titleController.text;
       Navigator.pop(context);
     });
+  }
+
+  Future<void> _loadSlots() async {
+    slotController.slots = [];
+    final List<Slot>? slots = await dao.findAll(workspaceController.workspace);
+    slotController.slots = slots ?? [];
   }
 
   void _redirectToAddSlotsPage() {

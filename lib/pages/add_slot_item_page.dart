@@ -6,7 +6,7 @@ import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/database/dao/item_dao.dart';
 import 'package:grorange/models/enums/item_consumption_level.dart';
 import 'package:grorange/models/item.dart';
-import 'package:grorange/models/slot.dart';
+import 'package:grorange/models/Slot.dart';
 import 'package:uuid/uuid.dart';
 
 class AddSlotItemPage extends StatefulWidget {
@@ -123,7 +123,7 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
     var uuid = const Uuid();
     final UserController userController = Get.find();
 
-    final Item item = Item(
+    /*final Item item = Item(
       uuid.v4(),
       _itemNameController.text,
       int.parse(_quantityController.text),
@@ -142,6 +142,6 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
     final List<Item> items = itemController.items;
     items.add(item);
 
-    itemController.items = items;
+    itemController.items = items;*/
   }
 }

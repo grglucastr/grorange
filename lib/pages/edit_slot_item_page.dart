@@ -7,7 +7,7 @@ import 'package:grorange/controllers/slot_controller.dart';
 import 'package:grorange/database/dao/item_dao.dart';
 import 'package:grorange/models/enums/item_consumption_level.dart';
 import 'package:grorange/models/item.dart';
-import 'package:grorange/models/slot.dart';
+import 'package:grorange/models/Slot.dart';
 
 class EditSlotItemPage extends StatefulWidget {
   const EditSlotItemPage({super.key});
@@ -152,6 +152,7 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
     final Slot slot = slotController.slot;
     final Item item = itemController.item;
 
+    /*
     final Item itemToUpdate = Item(
       item.id,
       _itemNameController.text,
@@ -168,6 +169,7 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
     var dao = ItemDAO();
     await dao.update(itemToUpdate);
     itemController.updateItem(itemToUpdate);
+    */
   }
 
   Future<bool?> _showDeleteItemDialog() {
