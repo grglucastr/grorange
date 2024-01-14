@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:grorange/models/workspace.dart';
+import 'package:grorange/models/Workspace.dart';
 
 class WorkspaceController extends GetxController {
 
