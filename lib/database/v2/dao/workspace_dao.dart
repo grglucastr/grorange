@@ -7,7 +7,7 @@ class WorkspaceDAO {
     try {
       await Amplify.DataStore.save(workspace);
     } on DataStoreException catch (e) {
-      safePrint('Something went wrong saving the model: ${e.message}');
+      safePrint('Something went wrong saving workspace: ${e.message}');
     }
   }
 
@@ -18,7 +18,7 @@ class WorkspaceDAO {
         where: Workspace.USER.eq(user.id)
       );
     } on DataStoreException catch (e) {
-      safePrint('Something went wrong querying posts: ${e.message}');
+      safePrint('Something went wrong querying workspaces: ${e.message}');
     }
     return null;
   }
