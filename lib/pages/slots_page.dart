@@ -124,8 +124,8 @@ class _SlotsPageState extends State<SlotsPage> {
 
   void _performDelete() async {
     final String workspaceName = workspaceController.workspace.name!;
-    await workspaceDAO.delete(workspaceController.workspace);
-    workspaceController.delete(workspaceController.workspace);
+    //TODO: await workspaceDAO.delete(workspaceController.workspace);
+    //TODO: workspaceController.delete(workspaceController.workspace);
     if (context.mounted) {
       appBarController.titleText = "Welcome, ${userController.firstName}";
 
@@ -162,10 +162,12 @@ class _SlotsPageState extends State<SlotsPage> {
         .updateName(workspaceController.workspace.id!, titleController.text)
         .then((value) {
       if (value == 1) {
+        //TODO: resolve this
+        /*
         Workspace wk = workspaceController.workspace;
         wk.name = titleController.text;
         workspaceController.workspace = wk;
-        appBarController.titleText = titleController.text;
+        appBarController.titleText = titleController.text;*/
       }
       Navigator.pop(context);
     });
