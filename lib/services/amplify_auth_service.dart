@@ -2,7 +2,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:get/get.dart';
 import 'package:grorange/controllers/user_controller.dart';
-import 'package:grorange/models/user.dart';
+import 'package:grorange/models/User.dart';
 
 class AmplifyAuthService {
   UserController userController = Get.find();
@@ -91,18 +91,17 @@ class AmplifyAuthService {
 
   Future<void> _handleSignInResult(SignInResult result) async {
     if (result.nextStep.signInStep == AuthSignInStep.done) {
-      safePrint('Sign in is complete');
-
       if (result.isSignedIn) {
         userController.userSignedIn = true;
-        AuthUser authUser = await getCurrentUser();
+        final AuthUser authUser = await getCurrentUser();
 
-        const DateTime? dateTime = null;
         userController.user = User(
-          authUser.userId,
-          "",
-          dateTime,
-          dateTime,
+          name: "",
+          id: authUser.userId,
+          inserted_at: DateTime.now().toString(),
+          items: [],
+          workspaces: [],
+          slots: []
         );
       }
     }
@@ -114,7 +113,6 @@ class AmplifyAuthService {
         provider: AuthProvider.google,
       );
 
-      safePrint('Sign in result: $result');
       _handleSignInResult(result);
 
       return result;
