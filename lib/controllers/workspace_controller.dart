@@ -5,6 +5,7 @@ class WorkspaceController extends GetxController {
 
   Workspace? _workspace;
   List<Workspace> _workspaces = List.empty(growable: true);
+  bool _loadingWorkspaces = false;
 
   Workspace get workspace => _workspace!;
 
@@ -30,5 +31,12 @@ class WorkspaceController extends GetxController {
     final List<Workspace> lst = workspaces.where((wk) => wk.id != workspace.id)
         .toList(growable: true);
     workspaces = lst;
+  }
+
+  bool get loadingWorkspaces => _loadingWorkspaces;
+
+  set loadingWorkspaces(bool value) {
+    _loadingWorkspaces = value;
+    update();
   }
 }
