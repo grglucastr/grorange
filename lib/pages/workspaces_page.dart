@@ -29,23 +29,14 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-
-    workspaceController.workspaces = [];
-    workspaceController.loadingWorkspaces = true;
-    Future<void>.delayed(const Duration(milliseconds: 1200), () async {
-      final WorkspaceDAO wkDAO = WorkspaceDAO();
-      List<Workspace>? lst = await wkDAO.findAll(userController.user);
-      workspaceController.workspaces = lst ?? [];
-      workspaceController.loadingWorkspaces = false;
-    });
-
+    _loadWorkspaces();
     _setAppBar();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PageAppBarWithActions(actions: []),
+      appBar: PageAppBarWithActions(actions: const []),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _redirectAddWorkspace(),
         child: const Icon(Icons.add),
@@ -77,13 +68,12 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
       buttons.add(GridButton(
         text: workspace.name,
         onTap: () {
-          //workspaceController.workspace = workspace;
-          appBarController.titleText = workspace.name!;
+          workspaceController.workspace = workspace;
+          appBarController.titleText = workspace.name;
           _redirectToSlots();
         },
       ));
     }
-
     return GridOptions(buttons: buttons);
   }
 
@@ -113,5 +103,16 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
 
   void _setAppBar(){
     appBarController.titleText = "Welcome, ${userController.firstName}";
+  }
+
+  void _loadWorkspaces() {
+    workspaceController.workspaces = [];
+    workspaceController.loadingWorkspaces = true;
+    Future<void>.delayed(const Duration(milliseconds: 1200), () async {
+      final WorkspaceDAO wkDAO = WorkspaceDAO();
+      List<Workspace>? lst = await wkDAO.findAll(userController.user);
+      workspaceController.workspaces = lst ?? [];
+      workspaceController.loadingWorkspaces = false;
+    });
   }
 }
