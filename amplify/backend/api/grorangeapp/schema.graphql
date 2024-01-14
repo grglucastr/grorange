@@ -18,7 +18,7 @@ type Workspace @model {
   active: Boolean
   inserted_at: String
   updated_at: String
-  user: User @belongsTo
+  user: User! @belongsTo
   slots: [Slot] @hasMany
 }
 
@@ -28,8 +28,8 @@ type Slot @model {
   active: Boolean
   inserted_at: String
   updated_at: String
-  user: User @belongsTo
-  workspace: Workspace @belongsTo
+  user: User! @belongsTo
+  workspace: Workspace! @belongsTo
   items: [Item] @hasMany
 }
 
@@ -42,8 +42,8 @@ type Item @model {
   active: Boolean
   inserted_at: String
   updated_at: String
-  user: User @belongsTo
-  slot: Slot @belongsTo
+  user: User! @belongsTo
+  slot: Slot! @belongsTo
 }
 
 enum ItemConsumptionLevel{
