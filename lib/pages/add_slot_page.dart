@@ -6,7 +6,7 @@ import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/models/slot.dart';
-import 'package:grorange/models/workspace.dart';
+import 'package:grorange/models/Workspace.dart';
 import 'package:uuid/uuid.dart';
 
 class AddSlotPage extends StatefulWidget {
