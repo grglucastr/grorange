@@ -9,6 +9,7 @@ import 'package:grorange/core_widgets/grid_button.dart';
 import 'package:grorange/core_widgets/page_title.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
 import 'package:grorange/database/v2/dao/workspace_dao.dart';
+import 'package:grorange/models/Workspace.dart';
 import 'package:grorange/models/slot.dart';
 import 'package:grorange/pages/add_slot_page.dart';
 import 'package:grorange/pages/slot_items_page.dart';
@@ -157,23 +158,32 @@ class _SlotsPageState extends State<SlotsPage> {
 
   void _confirmUpdate(
       TextEditingController titleController, BuildContext context) {
-    /*workspaceDAO
-        .updateName(workspaceController.workspace.id, titleController.text)
-        .then((value) {
-      if (value == 1) {
-        //TODO: resolve this
-        /*
-        Workspace wk = workspaceController.workspace;
-        wk.name = titleController.text;
-        workspaceController.workspace = wk;
-        appBarController.titleText = titleController.text;*/
-      }
+
+    final Workspace newWk = _prepareWorkspaceUpdate(titleController.text);
+    workspaceDAO.update(newWk).then((_) {
+      workspaceController.workspace = newWk;
+      appBarController.titleText = titleController.text;
       Navigator.pop(context);
-    });*/
+    });
   }
 
   void _redirectToAddSlotsPage() {
     var page = MaterialPageRoute(builder: (ctx) => const AddSlotPage());
     Navigator.of(context).push(page);
+  }
+
+  Workspace _prepareWorkspaceUpdate(String newTitle){
+    final Workspace old = workspaceController.workspace;
+    final Workspace newWk = Workspace(
+      name: newTitle,
+      updated_at: DateTime.now().toString(),
+      inserted_at: old.inserted_at,
+      active: old.active,
+      slots: old.slots,
+      id: old.id,
+      user: old.user,
+    );
+
+    return newWk;
   }
 }

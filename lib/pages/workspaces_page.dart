@@ -82,6 +82,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
     return Navigator.of(context).push(page).then((v){
       _setAppBar();
       _showSnackBarFeedback(v);
+      _loadWorkspaces();
     });
   }
 
@@ -108,7 +109,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
   void _loadWorkspaces() {
     workspaceController.workspaces = [];
     workspaceController.loadingWorkspaces = true;
-    Future<void>.delayed(const Duration(milliseconds: 1200), () async {
+    Future<void>.delayed(const Duration(milliseconds: 200), () async {
       final WorkspaceDAO wkDAO = WorkspaceDAO();
       List<Workspace>? lst = await wkDAO.findAll(userController.user);
       workspaceController.workspaces = lst ?? [];
