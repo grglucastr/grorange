@@ -11,9 +11,9 @@ import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/controllers/slot_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/database/dao/item_dao.dart';
-import 'package:grorange/database/dao/slot_dao.dart';
+import 'package:grorange/database/v2/dao/slot_dao.dart';
 import 'package:grorange/models/item.dart';
-import 'package:grorange/models/slot.dart';
+import 'package:grorange/models/Slot.dart';
 import 'package:grorange/pages/add_slot_item_page.dart';
 import 'package:grorange/pages/edit_slot_item_page.dart';
 
@@ -283,15 +283,10 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
           title: 'New slot name',
           controller: titleController,
           onConfirm: () {
-            slotDAO
-                .updateName(slotController.slot.id!, titleController.text)
-                .then((value) {
-              if (value == 1) {
-                Slot slot = slotController.slot;
-                slot.name = titleController.text;
-                slotController.slot = slot;
-                appBarController.titleText = titleController.text;
-              }
+            final Slot newSlot = _prepareSlotToUpdate(titleController.text);
+            slotDAO.update(newSlot).then((_) {
+              slotController.slot = newSlot;
+              appBarController.titleText = titleController.text;
               Navigator.pop(context);
             });
           },
@@ -328,5 +323,19 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
       'slot_name': slotName,
     };
     Navigator.pop(context, feedback); // return to previous page
+  }
+
+  Slot _prepareSlotToUpdate(String newSlotName) {
+    final Slot old = slotController.slot;
+    return Slot(
+      name: newSlotName,
+      updated_at: DateTime.now().toString(),
+      inserted_at: old.inserted_at,
+      active: old.active,
+      id: old.id,
+      user: old.user,
+      workspace: old.workspace,
+      items: old.items,
+    );
   }
 }

@@ -4,8 +4,8 @@ import 'package:grorange/widgets/page_app_bar.dart';
 import 'package:grorange/controllers/slot_controller.dart';
 import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
-import 'package:grorange/database/dao/slot_dao.dart';
-import 'package:grorange/models/slot.dart';
+import 'package:grorange/database/v2/dao/slot_dao.dart';
+import 'package:grorange/models/Slot.dart';
 import 'package:grorange/models/Workspace.dart';
 import 'package:uuid/uuid.dart';
 
@@ -27,7 +27,7 @@ class _AddSlotPageState extends State<AddSlotPage> {
   @override
   void initState() {
     super.initState();
-    workspace =  workspaceController.workspace;
+    workspace = workspaceController.workspace;
   }
 
   @override
@@ -86,16 +86,17 @@ class _AddSlotPageState extends State<AddSlotPage> {
     var dao = SlotDAO();
     var uuid = const Uuid();
 
-    final Slot slot = Slot(
-      uuid.v4(),
-      _slotNameController.text,
-      userController.user.id!,
-      workspace.id!,
-      DateTime.now(),
-      null,
+    final Slot newSlot = Slot(
+      id: uuid.v1(),
+      name: _slotNameController.text,
+      user: userController.user,
+      workspace: workspace,
+      active: true,
+      inserted_at: DateTime.now().toString(),
+      updated_at: null,
     );
 
-    await dao.save(slot);
-    slotController.add(slot);
+    await dao.save(newSlot);
+    slotController.add(newSlot);
   }
 }

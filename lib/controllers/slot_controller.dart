@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:grorange/models/slot.dart';
+import 'package:grorange/models/Slot.dart';
 
 class SlotController extends GetxController {
 
