@@ -9,7 +9,7 @@ import 'package:grorange/pages/home_page.dart';
 import 'package:grorange/pages/login_page.dart';
 import 'package:grorange/services/amplify_auth_service.dart';
 import 'package:grorange/services/user_service.dart';
-import 'package:grorange/widgets/loading.dart';
+import 'package:grorange/core_widgets/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginLogoutIntermediatePage extends StatefulWidget {
