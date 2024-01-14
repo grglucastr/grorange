@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grorange/core_widgets/grid_button.dart';
-import 'package:grorange/database/temp/workspace_dao.dart';
-import 'package:grorange/widgets/grid_empty.dart';
-import 'package:grorange/widgets/grid_options.dart';
-import 'package:grorange/widgets/page_app_bar_with_actions.dart';
-import 'package:grorange/core_widgets/page_title.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
-import 'package:grorange/database/dao/workspace_dao.dart';
-import 'package:grorange/models/workspace.dart';
+import 'package:grorange/core_widgets/grid_button.dart';
+import 'package:grorange/core_widgets/page_title.dart';
+import 'package:grorange/database/v2/dao/workspace_dao.dart';
+import 'package:grorange/models/Workspace.dart';
 import 'package:grorange/pages/add_workspace_page.dart';
 import 'package:grorange/pages/slots_page.dart';
+import 'package:grorange/widgets/grid_empty.dart';
+import 'package:grorange/widgets/grid_options.dart';
+import 'package:grorange/widgets/page_app_bar_with_actions.dart';
 
 class WorkspacesPage extends StatefulWidget {
   const WorkspacesPage({super.key});
@@ -29,13 +28,15 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    final WorkspaceDAO wkDAO = WorkspaceDAO();
-    workspaceController.workspaces = await wkDAO
-        .findAllByUserId(userController.user.id!);
-    _setAppBar();
 
-    await saveWorkspace();
-    await queryWorkspaces();
+    workspaceController.workspaces = [];
+    Future<void>.delayed(const Duration(milliseconds: 1200), () async {
+      final WorkspaceDAO wkDAO = WorkspaceDAO();
+      List<Workspace>? lst = await wkDAO.findAll(userController.user);
+      workspaceController.workspaces = lst ?? [];
+    });
+
+    _setAppBar();
   }
 
   @override
@@ -68,7 +69,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
       buttons.add(GridButton(
         text: workspace.name!,
         onTap: () {
-          workspaceController.workspace = workspace;
+          //workspaceController.workspace = workspace;
           appBarController.titleText = workspace.name!;
           _redirectToSlots();
         },
