@@ -4,6 +4,7 @@ import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
 import 'package:grorange/core_widgets/grid_button.dart';
+import 'package:grorange/core_widgets/loading.dart';
 import 'package:grorange/core_widgets/page_title.dart';
 import 'package:grorange/database/v2/dao/workspace_dao.dart';
 import 'package:grorange/models/Workspace.dart';
@@ -30,10 +31,12 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
     super.didChangeDependencies();
 
     workspaceController.workspaces = [];
+    workspaceController.loadingWorkspaces = true;
     Future<void>.delayed(const Duration(milliseconds: 1200), () async {
       final WorkspaceDAO wkDAO = WorkspaceDAO();
       List<Workspace>? lst = await wkDAO.findAll(userController.user);
       workspaceController.workspaces = lst ?? [];
+      workspaceController.loadingWorkspaces = false;
     });
 
     _setAppBar();
@@ -60,6 +63,11 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
   }
 
   Widget _renderGrid(List<Workspace> workspaces) {
+
+    if(workspaceController.loadingWorkspaces){
+      return const Loading();
+    }
+
     if (workspaces.isEmpty) {
       return const GridEmpty(text: 'No workspaces found...');
     }
@@ -67,7 +75,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> {
     List<GridButton> buttons = List.empty(growable: true);
     for (var workspace in workspaces) {
       buttons.add(GridButton(
-        text: workspace.name!,
+        text: workspace.name,
         onTap: () {
           //workspaceController.workspace = workspace;
           appBarController.titleText = workspace.name!;
