@@ -15,7 +15,7 @@ class WorkspaceDAO {
     try {
       return await Amplify.DataStore.query(
         Workspace.classType,
-        where: User.ID.eq(user),
+        where: Workspace.USER.eq(user.id)
       );
     } on DataStoreException catch (e) {
       safePrint('Something went wrong querying posts: ${e.message}');
