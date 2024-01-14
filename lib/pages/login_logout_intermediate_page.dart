@@ -2,12 +2,14 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grorange/widgets/loading.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/user_controller.dart';
+import 'package:grorange/database/v2/dao/user_dao.dart';
 import 'package:grorange/pages/home_page.dart';
 import 'package:grorange/pages/login_page.dart';
 import 'package:grorange/services/amplify_auth_service.dart';
+import 'package:grorange/services/user_service.dart';
+import 'package:grorange/widgets/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginLogoutIntermediatePage extends StatefulWidget {
@@ -41,14 +43,9 @@ class _LoginLogoutIntermediatePageState
     if (result != null && result.isSignedIn) {
       controller.loginInProgress = false;
 
-      final List<AuthUserAttribute>? attrs = await authService.fetchCurrentUserAttributes();
-      final AuthUserAttribute nameAttr = attrs!.firstWhere((attr) => _findNameAttribute(attr));
-      final String fullName = nameAttr.value;
-      controller.name = fullName;
-
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('logged', true);
-      await prefs.setString("user_data", controller.user.toJson());
+      await _setUserInfoToController(authService, controller);
+      await _saveUserToDatabase(controller);
+      await _saveLoggedSession(controller);
 
       if (context.mounted) {
         AppBarController appBarController = Get.find();
@@ -56,6 +53,23 @@ class _LoginLogoutIntermediatePageState
         _redirectToHome(context);
       }
     }
+  }
+
+  Future<void> _saveLoggedSession(UserController controller) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('logged', true);
+    await prefs.setString("user_data", UserService.toJson(controller.user));
+  }
+
+  Future<void> _saveUserToDatabase(UserController controller) async {
+    await UserDAO().save(controller.user);
+  }
+
+  Future<void> _setUserInfoToController(AmplifyAuthService authService, UserController controller) async {
+    final List<AuthUserAttribute>? attrs = await authService.fetchCurrentUserAttributes();
+    final AuthUserAttribute nameAttr = attrs!.firstWhere((attr) => _findNameAttribute(attr));
+    final String fullName = nameAttr.value;
+    controller.name = fullName;
   }
 
   void _doSignOut(UserController controller) async {
