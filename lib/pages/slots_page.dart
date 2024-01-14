@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grorange/widgets/dialog_delete_confirm.dart';
-import 'package:grorange/widgets/dialog_edit_names.dart';
-import 'package:grorange/core_widgets/grid_button.dart';
-import 'package:grorange/widgets/grid_empty.dart';
-import 'package:grorange/widgets/grid_options.dart';
-import 'package:grorange/widgets/page_app_bar_with_actions.dart';
-import 'package:grorange/core_widgets/page_title.dart';
 import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/controllers/slot_controller.dart';
 import 'package:grorange/controllers/user_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
+import 'package:grorange/core_widgets/grid_button.dart';
+import 'package:grorange/core_widgets/page_title.dart';
 import 'package:grorange/database/dao/slot_dao.dart';
-import 'package:grorange/database/dao/workspace_dao.dart';
+import 'package:grorange/database/v2/dao/workspace_dao.dart';
 import 'package:grorange/models/slot.dart';
-import 'package:grorange/models/workspace.dart';
 import 'package:grorange/pages/add_slot_page.dart';
 import 'package:grorange/pages/slot_items_page.dart';
+import 'package:grorange/widgets/dialog_delete_confirm.dart';
+import 'package:grorange/widgets/dialog_edit_names.dart';
+import 'package:grorange/widgets/grid_empty.dart';
+import 'package:grorange/widgets/grid_options.dart';
+import 'package:grorange/widgets/page_app_bar_with_actions.dart';
 
 class SlotsPage extends StatefulWidget {
   const SlotsPage({super.key});
@@ -123,9 +122,9 @@ class _SlotsPageState extends State<SlotsPage> {
   }
 
   void _performDelete() async {
-    final String workspaceName = workspaceController.workspace.name!;
-    //TODO: await workspaceDAO.delete(workspaceController.workspace);
-    //TODO: workspaceController.delete(workspaceController.workspace);
+    final String workspaceName = workspaceController.workspace.name;
+    await workspaceDAO.delete(workspaceController.workspace);
+    workspaceController.delete(workspaceController.workspace);
     if (context.mounted) {
       appBarController.titleText = "Welcome, ${userController.firstName}";
 
@@ -158,8 +157,8 @@ class _SlotsPageState extends State<SlotsPage> {
 
   void _confirmUpdate(
       TextEditingController titleController, BuildContext context) {
-    workspaceDAO
-        .updateName(workspaceController.workspace.id!, titleController.text)
+    /*workspaceDAO
+        .updateName(workspaceController.workspace.id, titleController.text)
         .then((value) {
       if (value == 1) {
         //TODO: resolve this
@@ -170,7 +169,7 @@ class _SlotsPageState extends State<SlotsPage> {
         appBarController.titleText = titleController.text;*/
       }
       Navigator.pop(context);
-    });
+    });*/
   }
 
   void _redirectToAddSlotsPage() {

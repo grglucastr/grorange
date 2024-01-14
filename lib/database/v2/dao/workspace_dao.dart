@@ -15,7 +15,7 @@ class WorkspaceDAO {
     try {
       return await Amplify.DataStore.query(
         Workspace.classType,
-        where: Workspace.USER.eq(user.id)
+        where: Workspace.USER.eq(user.id),
       );
     } on DataStoreException catch (e) {
       safePrint('Something went wrong querying workspaces: ${e.message}');
@@ -23,5 +23,14 @@ class WorkspaceDAO {
     return null;
   }
 
-
+  Future<void> delete(Workspace workspace) async {
+    try {
+      await Amplify.DataStore.delete(
+        workspace,
+        where: Workspace.ID.eq(workspace.id),
+      );
+    } on DataStoreException catch (e) {
+      safePrint('Somethign went wrong when delete workspace: ${e.message}');
+    }
+  }
 }
