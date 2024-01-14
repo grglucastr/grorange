@@ -30,7 +30,18 @@ class WorkspaceDAO {
         where: Workspace.ID.eq(workspace.id),
       );
     } on DataStoreException catch (e) {
-      safePrint('Somethign went wrong when delete workspace: ${e.message}');
+      safePrint('Something went wrong when delete workspace: ${e.message}');
+    }
+  }
+
+  Future<void> update(Workspace workspace) async {
+    try {
+      await Amplify.DataStore.save(
+        workspace,
+        where: Workspace.ID.eq(workspace.id),
+      );
+    } on DataStoreException catch (e) {
+      safePrint('Something went wrong when updating workspace: ${e.message}');
     }
   }
 }
