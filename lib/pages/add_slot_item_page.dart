@@ -1,12 +1,13 @@
+import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grorange/widgets/page_app_bar.dart';
 import 'package:grorange/controllers/item_controller.dart';
-import 'package:grorange/controllers/user_controller.dart';
-import 'package:grorange/database/dao/item_dao.dart';
-import 'package:grorange/models/enums/item_consumption_level.dart';
-import 'package:grorange/models/item.dart';
+import 'package:grorange/database/v2/dao/item_dao.dart';
+import 'package:grorange/models/Item.dart';
 import 'package:grorange/models/Slot.dart';
+import 'package:grorange/models/enums/item_consumption_level.dart';
+import 'package:grorange/services/item_service.dart';
+import 'package:grorange/widgets/page_app_bar.dart';
 import 'package:uuid/uuid.dart';
 
 class AddSlotItemPage extends StatefulWidget {
@@ -91,7 +92,8 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
                       consumption = newVal;
                     });
                   }),
-              Text(ItemConsumptionLevel.getLevelFromPercentage(consumption).text),
+              Text(ItemConsumptionLevel.getLevelFromPercentage(consumption)
+                  .text),
               const SizedBox(height: 50),
               SizedBox(
                 width: double.maxFinite,
@@ -120,20 +122,24 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
   }
 
   void _save() async {
-    var uuid = const Uuid();
-    final UserController userController = Get.find();
+    int qty = 0;
+    try{
+       qty = int.parse(_quantityController.text);
+    } on FormatException catch(e){
+      safePrint('Quantity cannot be empty');
+      consumption = 0;
+    }
 
-    /*final Item item = Item(
-      uuid.v4(),
-      _itemNameController.text,
-      int.parse(_quantityController.text),
-      consumption,
-      ItemConsumptionLevel.getLevelFromPercentage(consumption),
-      widget.slot.id!,
-      widget.slot.workspaceId,
-      userController.user.id!,
-      DateTime.now(),
-      null,
+    var uuid = const Uuid();
+    final item = Item(
+      id: uuid.v4(),
+      name: _itemNameController.text,
+      quantity: qty,
+      usagePercentage: consumption,
+      consumptionLevel: ItemService.getLevelFromPercentage(consumption),
+      slot: widget.slot,
+      user: widget.slot.user,
+      inserted_at: DateTime.now().toString(),
     );
 
     var dao = ItemDAO();
@@ -142,6 +148,6 @@ class _AddSlotItemPageState extends State<AddSlotItemPage> {
     final List<Item> items = itemController.items;
     items.add(item);
 
-    itemController.items = items;*/
+    itemController.items = items;
   }
 }
