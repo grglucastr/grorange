@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grorange/services/item_service.dart';
 import 'package:grorange/widgets/dialog_delete_confirm.dart';
 import 'package:grorange/widgets/dialog_edit_names.dart';
 import 'package:grorange/widgets/grid_empty.dart';
@@ -10,9 +11,9 @@ import 'package:grorange/controllers/app_bar_controller.dart';
 import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/controllers/slot_controller.dart';
 import 'package:grorange/controllers/workspace_controller.dart';
-import 'package:grorange/database/dao/item_dao.dart';
+import 'package:grorange/database/v2/dao/item_dao.dart';
 import 'package:grorange/database/v2/dao/slot_dao.dart';
-import 'package:grorange/models/item.dart';
+import 'package:grorange/models/Item.dart';
 import 'package:grorange/models/Slot.dart';
 import 'package:grorange/pages/add_slot_item_page.dart';
 import 'package:grorange/pages/edit_slot_item_page.dart';
@@ -39,7 +40,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     if (itemController.items.isEmpty) {
-      itemController.items = await dao.findAll(slotController.slot.id!);
+      itemController.items = await dao.findAll(slotController.slot) ?? [];
     }
     itemController.filteredItems = itemController.items;
   }
@@ -186,7 +187,7 @@ class _SlotItemsPageState extends State<SlotItemsPage> {
   ListTile _renderListTile(Item item) {
     return ListTile(
       title: Text(item.name),
-      subtitle: Text(item.consumptionLevel.text),
+      subtitle: Text(ItemService.itemConsumptionLevelString(item.consumptionLevel)),
       onTap: () {
         appBarController.titleText = 'Edit ${item.name}';
         itemController.item = item;

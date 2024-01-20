@@ -1,6 +1,6 @@
 import 'package:amplify_core/amplify_core.dart';
 import 'package:get/get.dart';
-import 'package:grorange/models/item.dart';
+import 'package:grorange/models/Item.dart';
 
 class ItemController extends GetxController {
   Item? _item;

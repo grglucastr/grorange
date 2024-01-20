@@ -4,9 +4,9 @@ import 'package:grorange/widgets/dialog_delete_confirm.dart';
 import 'package:grorange/widgets/page_app_bar_with_actions.dart';
 import 'package:grorange/controllers/item_controller.dart';
 import 'package:grorange/controllers/slot_controller.dart';
-import 'package:grorange/database/dao/item_dao.dart';
+import 'package:grorange/database/v2/dao/item_dao.dart';
 import 'package:grorange/models/enums/item_consumption_level.dart';
-import 'package:grorange/models/item.dart';
+import 'package:grorange/models/Item.dart';
 import 'package:grorange/models/Slot.dart';
 
 class EditSlotItemPage extends StatefulWidget {
@@ -21,7 +21,7 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
   final TextEditingController _quantityController = TextEditingController();
   final SlotController slotController = Get.find();
   final ItemController itemController = Get.find();
-  double consumption = .5;
+  double? consumption = .5;
 
   @override
   void initState() {
@@ -43,17 +43,15 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
               bool? proceedDelete = await _showDeleteItemDialog();
               if (proceedDelete!) {
                 final Item item = itemController.item;
-                final int deleted = await dao.delete(item);
-                if (deleted == 1) {
-                  if (context.mounted) {
-                    final Map<String, dynamic> feedback = {
-                      'action': 'delete',
-                      'successfully': true,
-                      'item_name': item.name,
-                    };
-                    itemController.remove(item);
-                    Navigator.pop(context, feedback);
-                  }
+                await dao.delete(item);
+                if (context.mounted) {
+                  final Map<String, dynamic> feedback = {
+                    'action': 'delete',
+                    'successfully': true,
+                    'item_name': item.name,
+                  };
+                  itemController.remove(item);
+                  Navigator.pop(context, feedback);
                 }
               }
             },
@@ -112,13 +110,13 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
                 ),
               ),
               Slider(
-                  value: consumption,
+                  value: consumption ?? 0,
                   onChanged: (newVal) {
                     setState(() {
                       consumption = newVal;
                     });
                   }),
-              Text(ItemConsumptionLevel.getLevelFromPercentage(consumption)
+              Text(ItemConsumptionLevel.getLevelFromPercentage(consumption ?? 0)
                   .text),
               const SizedBox(height: 50),
               SizedBox(
