@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grorange/services/item_service.dart';
 import 'package:grorange/widgets/dialog_delete_confirm.dart';
 import 'package:grorange/widgets/page_app_bar_with_actions.dart';
 import 'package:grorange/controllers/item_controller.dart';
@@ -7,7 +8,6 @@ import 'package:grorange/controllers/slot_controller.dart';
 import 'package:grorange/database/v2/dao/item_dao.dart';
 import 'package:grorange/models/enums/item_consumption_level.dart';
 import 'package:grorange/models/Item.dart';
-import 'package:grorange/models/Slot.dart';
 
 class EditSlotItemPage extends StatefulWidget {
   const EditSlotItemPage({super.key});
@@ -147,27 +147,24 @@ class _EditSlotItemPageState extends State<EditSlotItemPage> {
   }
 
   void _save() async {
-    final Slot slot = slotController.slot;
     final Item item = itemController.item;
 
-    /*
     final Item itemToUpdate = Item(
-      item.id,
-      _itemNameController.text,
-      int.parse(_quantityController.text),
-      consumption,
-      ItemConsumptionLevel.getLevelFromPercentage(consumption),
-      slot.id!,
-      slot.workspaceId,
-      item.userId,
-      slot.insertDateTime,
-      DateTime.now(),
+      id: item.id,
+      name: _itemNameController.text,
+      quantity: int.parse(_quantityController.text),
+      usagePercentage: consumption,
+      consumptionLevel: ItemService.getLevelFromPercentage(consumption ?? 0),
+      active: true,
+      inserted_at: item.inserted_at,
+      updated_at: DateTime.now().toString(),
+      user: item.user,
+      slot: item.slot
     );
 
     var dao = ItemDAO();
     await dao.update(itemToUpdate);
     itemController.updateItem(itemToUpdate);
-    */
   }
 
   Future<bool?> _showDeleteItemDialog() {

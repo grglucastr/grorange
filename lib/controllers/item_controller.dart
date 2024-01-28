@@ -39,8 +39,11 @@ class ItemController extends GetxController {
   }
 
   void updateItem(Item item){
-    final int index = _items.indexOf(item);
+    final Item oldItem = _items.where((it) => it.id == item.id).first;
+    final int index = _items.indexOf(oldItem);
+
     remove(item);
+
     final List<Item> items = _items;
     items.insert(index, item);
     _items = items;
