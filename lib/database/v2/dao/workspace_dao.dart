@@ -44,4 +44,19 @@ class WorkspaceDAO {
       safePrint('Something went wrong when updating workspace: ${e.message}');
     }
   }
+
+  Future<void> deleteAllUserWorkspaces(User user) async {
+    try{
+      List<Workspace>? workspaces = await Amplify.DataStore.query(
+          Workspace.classType,
+          where: Workspace.USER.eq(user.id));
+
+      for (var workspace in workspaces) {
+        await Amplify.DataStore.delete(workspace);
+      }
+
+    }on DataStoreException catch (e) {
+      safePrint('Something went wrong querying workspaces: ${e.message}');
+    }
+  }
 }

@@ -43,4 +43,20 @@ class SlotDAO {
       safePrint('Something went wrong when updating slot: ${e.message}');
     }
   }
+
+  Future<void> deleteAllUserSlots(User user) async {
+    try{
+      List<Slot>? slots = await Amplify.DataStore.query(
+          Slot.classType,
+          where: Slot.USER.eq(user.id));
+
+      for (var slot in slots) {
+        await Amplify.DataStore.delete(slot);
+      }
+
+    }on DataStoreException catch (e) {
+      safePrint('Something went wrong querying slots: ${e.message}');
+    }
+  }
+
 }
