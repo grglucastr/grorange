@@ -40,6 +40,13 @@ class _LoginLogoutIntermediatePageState
     final AmplifyAuthService authService = AmplifyAuthService();
     final SignInResult? result = await authService.socialSignIn();
 
+    if (result == null){
+      controller.loginInProgress = false;
+      if (context.mounted) {
+        _redirectToLoginPage(context);
+      }
+    }
+
     if (result != null && result.isSignedIn) {
       controller.loginInProgress = false;
 
